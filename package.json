@@ -1,0 +1,22 @@
+{
+  "name": "focus-guide",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "pnpm --parallel --filter './apps/*' dev",
+    "dev:web": "pnpm --filter @focus-guide/web dev",
+    "dev:api": "pnpm --filter @focus-guide/api dev",
+    "build": "pnpm --filter './apps/*' build",
+    "test": "pnpm --recursive test",
+    "lint": "pnpm --recursive lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=8"
+  }
+}

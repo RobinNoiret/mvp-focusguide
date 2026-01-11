@@ -1,0 +1,8 @@
+.next/
+build/
+node_modules/
+dist/
+.vercel/
+.railway/
+pnpm-lock.yaml
+*.log

@@ -1,0 +1,20 @@
+{
+  "extends": "../../packages/config/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./build",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "types": ["@adonisjs/core", "node"],
+    "paths": {
+      "#controllers/*": ["./app/controllers/*"],
+      "#services/*": ["./app/services/*"],
+      "#models/*": ["./app/models/*"],
+      "#middleware/*": ["./app/middleware/*"],
+      "#config/*": ["./config/*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "build"]
+}
