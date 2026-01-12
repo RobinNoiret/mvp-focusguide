@@ -19,7 +19,7 @@ importers:
         version: 9.5.1(@adonisjs/assembler@7.8.2)(@adonisjs/core@6.19.3)(@adonisjs/lucid@21.8.1)(@adonisjs/session@7.7.1)(@japa/api-client@3.2.1)(@japa/plugin-adonisjs@4.0.0)
       '@adonisjs/core':
         specifier: ^6.18.0
-        version: 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+        version: 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@adonisjs/cors':
         specifier: ^2.2.1
         version: 2.2.1(@adonisjs/core@6.19.3)
@@ -75,12 +75,18 @@ importers:
       '@swc/core':
         specifier: 1.11.24
         version: 1.11.24
+      '@types/bcrypt':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/luxon':
         specifier: ^3.7.1
         version: 3.7.1
       '@types/node':
         specifier: ^22.15.18
         version: 22.19.5
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
       eslint:
         specifier: ^9.26.0
         version: 9.39.2
@@ -264,7 +270,7 @@ packages:
       '@japa/plugin-adonisjs':
         optional: true
     dependencies:
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@adonisjs/lucid': 21.8.1(@adonisjs/assembler@7.8.2)(@adonisjs/core@6.19.3)(@vinejs/vine@3.0.1)(luxon@3.7.2)(pg@8.16.3)
       '@adonisjs/presets': 2.6.4(@adonisjs/assembler@7.8.2)(@adonisjs/core@6.19.3)
       '@adonisjs/session': 7.7.1(@adonisjs/core@6.19.3)(@adonisjs/lucid@21.8.1)(@adonisjs/redis@9.2.0)(@japa/api-client@3.2.1)
@@ -303,7 +309,7 @@ packages:
     dependencies:
       '@poppinss/utils': 6.10.1
 
-  /@adonisjs/core@6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1):
+  /@adonisjs/core@6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0):
     resolution: {integrity: sha512-2XDksJ2In0Jh/ZDRs+dYARhZ01tONtZ4c8MGI5CvwSUcM4WMYUs2GyXGOYihfqtYOhG2URe7iq2Ou+e5k5VjgA==}
     engines: {node: '>=20.6.0'}
     hasBin: true
@@ -334,7 +340,7 @@ packages:
       '@adonisjs/env': 6.2.0
       '@adonisjs/events': 9.0.2(@adonisjs/application@8.4.2)(@adonisjs/fold@10.2.1)
       '@adonisjs/fold': 10.2.1
-      '@adonisjs/hash': 9.1.1
+      '@adonisjs/hash': 9.1.1(bcrypt@6.0.0)
       '@adonisjs/health': 2.0.0
       '@adonisjs/http-server': 7.8.0(@adonisjs/application@8.4.2)(@adonisjs/encryption@6.0.2)(@adonisjs/events@9.0.2)(@adonisjs/fold@10.2.1)(@adonisjs/logger@6.0.7)
       '@adonisjs/logger': 6.0.7
@@ -348,6 +354,7 @@ packages:
       '@sindresorhus/is': 7.2.0
       '@types/he': 1.2.3
       '@vinejs/vine': 3.0.1
+      bcrypt: 6.0.0
       error-stack-parser-es: 1.0.5
       he: 1.2.0
       parse-imports: 2.2.1
@@ -364,7 +371,7 @@ packages:
     peerDependencies:
       '@adonisjs/core': ^6.2.0
     dependencies:
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
     dev: false
 
   /@adonisjs/encryption@6.0.2:
@@ -437,7 +444,7 @@ packages:
       '@poppinss/utils': 7.0.0-next.6
       parse-imports: 2.2.1
 
-  /@adonisjs/hash@9.1.1:
+  /@adonisjs/hash@9.1.1(bcrypt@6.0.0):
     resolution: {integrity: sha512-ZkRguwjAp4skKvKDdRAfdJ2oqQ0N7p9l3sioyXO1E8o0WcsyDgEpsTQtuVNoIdMiw4sn4gJlmL3nyF4BcK1ZDQ==}
     engines: {node: '>=20.6.0'}
     peerDependencies:
@@ -451,6 +458,7 @@ packages:
     dependencies:
       '@phc/format': 1.0.0
       '@poppinss/utils': 6.10.1
+      bcrypt: 6.0.0
 
   /@adonisjs/health@2.0.0:
     resolution: {integrity: sha512-dEAABiAJew1imzwi+OvV/SAnjkMp8TbD5ZIzx1dMRnPynJAlRf37//bHLwZ5Cw44ke5kPzZ/l1n9cx/VeBCicA==}
@@ -508,7 +516,7 @@ packages:
       '@adonisjs/redis':
         optional: true
     dependencies:
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@adonisjs/lucid': 21.8.1(@adonisjs/assembler@7.8.2)(@adonisjs/core@6.19.3)(@vinejs/vine@3.0.1)(luxon@3.7.2)(pg@8.16.3)
       '@adonisjs/redis': 9.2.0(@adonisjs/core@6.19.3)
       rate-limiter-flexible: 7.4.0
@@ -539,7 +547,7 @@ packages:
         optional: true
     dependencies:
       '@adonisjs/assembler': 7.8.2(typescript@5.8.3)
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@adonisjs/presets': 2.6.4(@adonisjs/assembler@7.8.2)(@adonisjs/core@6.19.3)
       '@faker-js/faker': 9.9.0
       '@poppinss/hooks': 7.3.0
@@ -577,7 +585,7 @@ packages:
         optional: true
     dependencies:
       '@adonisjs/assembler': 7.8.2(typescript@5.8.3)
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@poppinss/utils': 6.10.1
     dev: false
 
@@ -593,7 +601,7 @@ packages:
     peerDependencies:
       '@adonisjs/core': ^6.2.0
     dependencies:
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@poppinss/utils': 6.10.1
       emittery: 1.2.0
       ioredis: 5.9.1
@@ -636,7 +644,7 @@ packages:
       edge.js:
         optional: true
     dependencies:
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@adonisjs/lucid': 21.8.1(@adonisjs/assembler@7.8.2)(@adonisjs/core@6.19.3)(@vinejs/vine@3.0.1)(luxon@3.7.2)(pg@8.16.3)
       '@adonisjs/redis': 9.2.0(@adonisjs/core@6.19.3)
       '@japa/api-client': 3.2.1(@japa/assert@4.2.0)(@japa/runner@4.5.0)
@@ -1039,7 +1047,7 @@ packages:
       playwright:
         optional: true
     dependencies:
-      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)
+      '@adonisjs/core': 6.19.3(@adonisjs/assembler@7.8.2)(@vinejs/vine@3.0.1)(bcrypt@6.0.0)
       '@japa/api-client': 3.2.1(@japa/assert@4.2.0)(@japa/runner@4.5.0)
       '@japa/runner': 4.5.0
 
@@ -1605,6 +1613,12 @@ packages:
       tslib: 2.8.1
     dev: true
     optional: true
+
+  /@types/bcrypt@6.0.0:
+    resolution: {integrity: sha512-/oJGukuH3D2+D+3H4JWLaAsJ/ji86dhRidzZ/Od7H/i8g+aCmvkeCc6Ni/f9uxGLSQVCRZkX2/lqEFG2BvWtlQ==}
+    dependencies:
+      '@types/node': 22.19.5
+    dev: true
 
   /@types/chai@5.2.3:
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -2465,6 +2479,14 @@ packages:
     dependencies:
       safe-buffer: 5.1.2
     dev: false
+
+  /bcrypt@6.0.0:
+    resolution: {integrity: sha512-cU8v/EGSrnH+HnxV2z0J7/blxH8gq7Xh2JFT6Aroax7UohdmiJJlxApMxtKfuI7z68NvvVcmR78k2LbT6efhRg==}
+    engines: {node: '>= 18'}
+    requiresBuild: true
+    dependencies:
+      node-addon-api: 8.5.0
+      node-gyp-build: 4.8.4
 
   /binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -4800,6 +4822,14 @@ packages:
       - '@babel/core'
       - babel-plugin-macros
     dev: false
+
+  /node-addon-api@8.5.0:
+    resolution: {integrity: sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A==}
+    engines: {node: ^18 || ^20 || >= 21}
+
+  /node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
+    hasBin: true
 
   /node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}

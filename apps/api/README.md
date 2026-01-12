@@ -18,10 +18,13 @@ AdonisJS 6 backend REST API for Focus Guide.
 ## Development
 
 \`\`\`bash
+
 # From workspace root
+
 pnpm dev:api
 
 # Or from this directory
+
 pnpm dev
 \`\`\`
 
@@ -32,25 +35,44 @@ API runs on `http://localhost:3333`
 Create a `.env` file based on `.env.example`:
 
 \`\`\`bash
+cp .env.example .env
+# Then generate APP_KEY
+node ace generate:key
+\`\`\`
+
+Required variables:
+\`\`\`bash
 NODE_ENV=development
 PORT=3333
-APP_KEY=your-secret-app-key-here
-DATABASE_URL=postgresql://user:password@localhost:5432/focusguide
-REDIS_URL=redis://localhost:6379
+APP_KEY=<generated-with-node-ace-generate-key>
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your-password
+DB_DATABASE=focus_guide
+SESSION_DRIVER=cookie
 FRONTEND_URL=http://localhost:3000
 \`\`\`
 
-## Database Migrations
+## Database Setup
+
+### Test Database Connection
+
+\`\`\`bash
+node ace db:ping
+\`\`\`
+
+### Migrations
 
 \`\`\`bash
 # Run migrations
-pnpm db:migrate
+node ace migration:run
 
 # Rollback migrations
-pnpm db:rollback
+node ace migration:rollback
 
 # Create new migration
-pnpm ace make:migration migration_name
+node ace make:migration migration_name
 \`\`\`
 
 ## Testing
