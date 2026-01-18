@@ -2,7 +2,17 @@
 export type { User, PomodoroSettings } from './types/user.js'
 
 // Task types
-export type { Task, TaskStatus } from './types/task.js'
+export type { Task, TaskStatus, CreateTaskInput, UpdateTaskInput } from './types/task.js'
 
 // Project types
-export type { Project } from './types/project.js'
+export type { Project, CreateProjectInput, UpdateProjectInput } from './types/project.js'
+
+// Auth types
+export type {
+  LoginRequest,
+  RegisterRequest,
+  RegisterResponse,
+  AuthResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+} from './types/auth.js'

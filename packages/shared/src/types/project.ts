@@ -16,3 +16,17 @@ export interface Project {
   updatedAt: string
   deletedAt: string | null
 }
+
+export interface CreateProjectInput {
+  title: string
+  description?: string
+  deadline?: string
+  tags?: string[]
+}
+
+export interface UpdateProjectInput {
+  title?: string
+  description?: string | null
+  deadline?: string | null
+  tags?: string[]
+}

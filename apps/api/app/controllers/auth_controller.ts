@@ -1,9 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { randomUUID } from 'node:crypto'
+import { DateTime } from 'luxon'
 import User from '#models/user'
+import VerificationToken from '#models/verification_token'
+import { emailService } from '#services/email_service'
 import {
   registerValidator,
   loginValidator,
   refreshTokenValidator,
+  verifyEmailValidator,
 } from '#validators/auth_validator'
 
 export default class AuthController {
@@ -28,6 +33,24 @@ export default class AuthController {
         autoSwitch: false,
       },
     })
+
+    // Generate verification token (24h expiry)
+    const token = randomUUID()
+    const expiresAt = DateTime.now().plus({ hours: 24 })
+
+    await VerificationToken.create({
+      userId: user.id,
+      token,
+      type: 'email_verification',
+      expiresAt,
+    })
+
+    // Send verification email (don't fail registration if email fails)
+    try {
+      await emailService.sendVerificationEmail(user, token)
+    } catch (error) {
+      console.error('Failed to send verification email:', error)
+    }
 
     return response.created({
       id: user.id,
@@ -105,5 +128,79 @@ export default class AuthController {
     }
 
     return response.ok({ message: 'Logged out successfully' })
+  }
+
+  async verifyEmail({ request, response }: HttpContext) {
+    const { token } = await request.validateUsing(verifyEmailValidator)
+
+    // Find token
+    const verificationToken = await VerificationToken.query()
+      .where('token', token)
+      .where('type', 'email_verification')
+      .preload('user')
+      .first()
+
+    if (!verificationToken) {
+      return response.badRequest({ error: 'Invalid verification token' })
+    }
+
+    // Check expiry
+    if (verificationToken.isExpired()) {
+      await verificationToken.delete()
+      return response.badRequest({ error: 'Verification token expired' })
+    }
+
+    // Mark user as verified
+    verificationToken.user.emailVerified = true
+    await verificationToken.user.save()
+
+    // Delete token (one-time use)
+    await verificationToken.delete()
+
+    return response.ok({
+      message: 'Email verified successfully',
+      user: {
+        id: verificationToken.user.id,
+        email: verificationToken.user.email,
+        name: verificationToken.user.name,
+        emailVerified: verificationToken.user.emailVerified,
+      },
+    })
+  }
+
+  async resendVerification({ auth, response }: HttpContext) {
+    const user = auth.user!
+
+    // Check if already verified
+    if (user.emailVerified) {
+      return response.badRequest({ error: 'Email already verified' })
+    }
+
+    // Delete old tokens
+    await VerificationToken.query()
+      .where('user_id', user.id)
+      .where('type', 'email_verification')
+      .delete()
+
+    // Generate new token
+    const token = randomUUID()
+    const expiresAt = DateTime.now().plus({ hours: 24 })
+
+    await VerificationToken.create({
+      userId: user.id,
+      token,
+      type: 'email_verification',
+      expiresAt,
+    })
+
+    // Send email
+    try {
+      await emailService.sendVerificationEmail(user, token)
+    } catch (error) {
+      console.error('Failed to send verification email:', error)
+      return response.internalServerError({ error: 'Failed to send email' })
+    }
+
+    return response.ok({ message: 'Verification email sent' })
   }
 }

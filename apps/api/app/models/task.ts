@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from './user.js'
+import Project from './project.js'
 
 export default class Task extends BaseModel {
   @column({ isPrimary: true })
@@ -25,6 +26,9 @@ export default class Task extends BaseModel {
   @column()
   declare todayStatus: 'backlog' | 'todo' | 'in_progress' | 'done' | null
 
+  @column.dateTime()
+  declare deadline: DateTime | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -36,4 +40,7 @@ export default class Task extends BaseModel {
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
+
+  @belongsTo(() => Project)
+  declare project: BelongsTo<typeof Project>
 }

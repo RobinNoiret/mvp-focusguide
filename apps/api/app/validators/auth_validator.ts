@@ -20,3 +20,9 @@ export const refreshTokenValidator = vine.compile(
     refreshToken: vine.string(),
   })
 )
+
+export const verifyEmailValidator = vine.compile(
+  vine.object({
+    token: vine.string().uuid(),
+  })
+)

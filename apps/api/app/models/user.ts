@@ -6,6 +6,8 @@ import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Task from './task.js'
+import Project from './project.js'
+import VerificationToken from './verification_token.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('bcrypt'), {
   uids: ['email'],
@@ -41,4 +43,10 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @hasMany(() => Task)
   declare tasks: HasMany<typeof Task>
+
+  @hasMany(() => Project)
+  declare projects: HasMany<typeof Project>
+
+  @hasMany(() => VerificationToken)
+  declare verificationTokens: HasMany<typeof VerificationToken>
 }
