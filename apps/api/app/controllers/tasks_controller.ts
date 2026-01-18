@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 import Task from '#models/task'
 import { createTaskValidator, updateTaskValidator } from '#validators/task_validator'
+import { TaskSyncService } from '#services/task_sync_service'
 
 export default class TasksController {
   async store({ request, auth, response }: HttpContext) {
@@ -71,7 +72,12 @@ export default class TasksController {
       }
     }
 
-    await task.save()
+    // AC 4: Apply bidirectional sync
+    if (data.todayStatus || data.projectStatus) {
+      await TaskSyncService.applyBidirectionalSync(task)
+    } else {
+      await task.save()
+    }
 
     return response.ok(task)
   }
