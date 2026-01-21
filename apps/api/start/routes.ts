@@ -37,9 +37,9 @@ router
 
     // Task routes
     router.post('/tasks', [TasksController, 'store']).use(middleware.auth())
+    router.get('/today', [TasksController, 'today']).use(middleware.auth())
     router.patch('/tasks/:id', [TasksController, 'update']).use(middleware.auth())
     router.delete('/tasks/:id', [TasksController, 'destroy']).use(middleware.auth())
-    router.get('/today', [TasksController, 'today']).use(middleware.auth())
 
     // Project routes
     router.get('/projects', [ProjectsController, 'index']).use(middleware.auth())

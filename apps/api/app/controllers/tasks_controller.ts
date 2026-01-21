@@ -23,14 +23,18 @@ export default class TasksController {
   }
 
   async today({ auth }: HttpContext) {
+    console.log('[DEBUG] GET /today - Starting...')
     const user = auth.getUserOrFail()
+    console.log('[DEBUG] GET /today - User:', user.id)
 
+    console.log('[DEBUG] GET /today - Querying tasks...')
     const tasks = await Task.query()
       .where('userId', user.id)
       .whereNotNull('todayStatus')
       .whereNull('deletedAt')
       .orderBy('createdAt', 'desc')
 
+    console.log('[DEBUG] GET /today - Found', tasks.length, 'tasks')
     return tasks
   }
 
@@ -50,6 +54,9 @@ export default class TasksController {
     if (task.userId !== user.id) {
       return response.forbidden({ error: 'Not authorized to update this task' })
     }
+
+    // Save old projectStatus before modifications (for sync logic)
+    const previousProjectStatus = task.projectStatus
 
     if (data.title !== undefined) {
       task.title = data.title.trim()
@@ -72,9 +79,11 @@ export default class TasksController {
       }
     }
 
-    // AC 4: Apply bidirectional sync
-    if (data.todayStatus || data.projectStatus) {
-      await TaskSyncService.applyBidirectionalSync(task)
+    // AC 4: Apply unidirectional sync (Today → Project only, FORWARD progression)
+    // Only sync if todayStatus changed (not projectStatus)
+    // Pass the previous projectStatus to determine if we're advancing or regressing
+    if (data.todayStatus !== undefined) {
+      await TaskSyncService.applyBidirectionalSync(task, previousProjectStatus)
     } else {
       await task.save()
     }
