@@ -13,6 +13,7 @@ import { middleware } from '#start/kernel'
 const AuthController = () => import('#controllers/auth_controller')
 const TasksController = () => import('#controllers/tasks_controller')
 const ProjectsController = () => import('#controllers/projects_controller')
+const UsersController = () => import('#controllers/users_controller')
 
 router.get('/', async () => {
   return {
@@ -33,6 +34,12 @@ router
     router.post('/auth/verify-email', [AuthController, 'verifyEmail'])
     router
       .post('/auth/resend-verification', [AuthController, 'resendVerification'])
+      .use(middleware.auth())
+
+    // User routes
+    router.get('/users/me', [UsersController, 'me']).use(middleware.auth())
+    router
+      .patch('/users/me/pomodoro-settings', [UsersController, 'updatePomodoroSettings'])
       .use(middleware.auth())
 
     // Task routes
