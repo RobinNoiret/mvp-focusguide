@@ -84,6 +84,11 @@ export default class TasksController {
     // Pass the previous projectStatus to determine if we're advancing or regressing
     if (data.todayStatus !== undefined) {
       await TaskSyncService.applyBidirectionalSync(task, previousProjectStatus)
+    } else if (data.projectStatus !== undefined && data.projectStatus === 'done' && task.todayStatus) {
+      // Reverse sync: If projectStatus changes to "done" and task is in Today, mark it done in Today too
+      // This ensures consistency: if done in project, should be done in Today
+      task.todayStatus = 'done'
+      await task.save()
     } else {
       await task.save()
     }
