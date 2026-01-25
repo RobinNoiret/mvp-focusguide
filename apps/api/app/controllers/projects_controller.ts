@@ -4,6 +4,8 @@ import db from '@adonisjs/lucid/services/db'
 import Project from '#models/project'
 import Task from '#models/task'
 import { createProjectValidator, updateProjectValidator } from '#validators/project_validator'
+import { calculateProjectStats } from '#services/project_stats_service'
+import { NotFoundException, BadRequestException } from '#exceptions/app_exception'
 
 export default class ProjectsController {
   /**
@@ -22,24 +24,11 @@ export default class ProjectsController {
       .orderBy('createdAt', 'desc')
 
     const projectsWithStats = projects.map((project) => {
-      const tasks = project.tasks
-      const totalTasks = tasks.length
-      const doneTasks = tasks.filter((t) => t.projectStatus === 'done').length
-
-      const completionPercentage = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100)
-
-      const taskCounts = {
-        backlog: tasks.filter((t) => t.projectStatus === 'backlog').length,
-        todo: tasks.filter((t) => t.projectStatus === 'todo').length,
-        inProgress: tasks.filter((t) => t.projectStatus === 'in_progress').length,
-        done: doneTasks,
-      }
+      const stats = calculateProjectStats(project.tasks)
 
       return {
         ...project.serialize(),
-        completionPercentage,
-        taskCount: totalTasks,
-        taskCounts,
+        ...stats,
       }
     })
 
@@ -58,7 +47,7 @@ export default class ProjectsController {
     if (data.deadline) {
       const deadlineDate = DateTime.fromISO(data.deadline)
       if (!deadlineDate.isValid || deadlineDate < DateTime.now().startOf('day')) {
-        return response.badRequest({ error: 'Deadline must be a valid future date' })
+        throw new BadRequestException('Deadline must be a valid future date')
       }
     }
 
@@ -92,7 +81,7 @@ export default class ProjectsController {
       .first()
 
     if (!project) {
-      return response.notFound({ error: 'Project not found' })
+      throw new NotFoundException('Project', params.id)
     }
 
     const tasks = await project
@@ -101,22 +90,11 @@ export default class ProjectsController {
       .whereNull('deletedAt')
       .orderBy('createdAt', 'desc')
 
-    const totalTasks = tasks.length
-    const doneTasks = tasks.filter((t) => t.projectStatus === 'done').length
-    const completionPercentage = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100)
-
-    const taskCounts = {
-      backlog: tasks.filter((t) => t.projectStatus === 'backlog').length,
-      todo: tasks.filter((t) => t.projectStatus === 'todo').length,
-      inProgress: tasks.filter((t) => t.projectStatus === 'in_progress').length,
-      done: doneTasks,
-    }
+    const stats = calculateProjectStats(tasks)
 
     return response.ok({
       ...project.serialize(),
-      completionPercentage,
-      taskCount: totalTasks,
-      taskCounts,
+      ...stats,
       tasks: tasks.map((t) => t.serialize()),
     })
   }
@@ -135,7 +113,7 @@ export default class ProjectsController {
       .first()
 
     if (!project) {
-      return response.notFound({ error: 'Project not found' })
+      throw new NotFoundException('Project', params.id)
     }
 
     const data = await request.validateUsing(updateProjectValidator)
@@ -147,7 +125,7 @@ export default class ProjectsController {
       } else {
         const deadlineDate = DateTime.fromISO(data.deadline)
         if (!deadlineDate.isValid) {
-          return response.badRequest({ error: 'Invalid deadline format' })
+          throw new BadRequestException('Invalid deadline format')
         }
         project.deadline = deadlineDate
       }
@@ -194,7 +172,7 @@ export default class ProjectsController {
 
       if (!project) {
         await trx.rollback()
-        return response.notFound({ error: 'Project not found' })
+        throw new NotFoundException('Project', params.id)
       }
 
       const now = DateTime.now()

@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import Task from '#models/task'
 import { createTaskValidator, updateTaskValidator } from '#validators/task_validator'
 import { TaskSyncService } from '#services/task_sync_service'
+import { NotFoundException, ForbiddenException } from '#exceptions/app_exception'
 
 export default class TasksController {
   async store({ request, auth, response }: HttpContext) {
@@ -23,18 +24,14 @@ export default class TasksController {
   }
 
   async today({ auth }: HttpContext) {
-    console.log('[DEBUG] GET /today - Starting...')
     const user = auth.getUserOrFail()
-    console.log('[DEBUG] GET /today - User:', user.id)
 
-    console.log('[DEBUG] GET /today - Querying tasks...')
     const tasks = await Task.query()
       .where('userId', user.id)
       .whereNotNull('todayStatus')
       .whereNull('deletedAt')
       .orderBy('createdAt', 'desc')
 
-    console.log('[DEBUG] GET /today - Found', tasks.length, 'tasks')
     return tasks
   }
 
@@ -48,11 +45,11 @@ export default class TasksController {
       .first()
 
     if (!task) {
-      return response.notFound({ error: 'Task not found' })
+      throw new NotFoundException('Task', params.id)
     }
 
     if (task.userId !== user.id) {
-      return response.forbidden({ error: 'Not authorized to update this task' })
+      throw new ForbiddenException('Not authorized to update this task')
     }
 
     // Save old projectStatus before modifications (for sync logic)
@@ -105,11 +102,11 @@ export default class TasksController {
       .first()
 
     if (!task) {
-      return response.notFound({ error: 'Task not found' })
+      throw new NotFoundException('Task', params.id)
     }
 
     if (task.userId !== user.id) {
-      return response.forbidden({ error: 'Not authorized to delete this task' })
+      throw new ForbiddenException('Not authorized to delete this task')
     }
 
     task.deletedAt = DateTime.now()

@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import User from '#models/user'
+import { BadRequestException } from '#exceptions/app_exception'
 
 export default class UsersController {
   // AC 5: Get user with settings
@@ -33,9 +33,7 @@ export default class UsersController {
       typeof settings.repetitions !== 'number' ||
       typeof settings.autoSwitch !== 'boolean'
     ) {
-      return response.badRequest({
-        message: 'Invalid settings types',
-      })
+      throw new BadRequestException('Invalid settings types')
     }
 
     if (
@@ -46,9 +44,7 @@ export default class UsersController {
       settings.repetitions < 1 ||
       settings.repetitions > 10
     ) {
-      return response.badRequest({
-        message: 'Invalid settings values',
-      })
+      throw new BadRequestException('Invalid settings values')
     }
 
     // AC 4: Update JSONB field
