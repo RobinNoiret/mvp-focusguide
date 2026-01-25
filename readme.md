@@ -78,6 +78,14 @@ pnpm format
 pnpm test
 \`\`\`
 
+## Keyboard Shortcuts
+
+### Pomodoro Timer
+- **Space** - Start/Pause timer
+- **R** - Restart current timer
+- **S** or **Esc** - Stop timer
+- **,** (Comma) - Open settings
+
 ## Project Structure
 
 \`\`\`
