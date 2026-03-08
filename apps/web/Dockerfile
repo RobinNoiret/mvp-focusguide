@@ -1,5 +1,7 @@
 FROM node:20-alpine
 
+ARG CACHEBUST=1
+
 RUN npm install -g pnpm@8
 
 WORKDIR /app
