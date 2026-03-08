@@ -13,7 +13,6 @@ COPY apps/api/package.json ./apps/api/
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/config/package.json ./packages/config/
 
-# --force retiré, il cause le prompt interactif
 RUN pnpm install --frozen-lockfile
 
 COPY apps/web ./apps/web
@@ -23,5 +22,5 @@ COPY packages/config ./packages/config
 RUN pnpm --filter @focus-guide/web build
 
 EXPOSE 3000
-
-CMD ["pnpm", "--filter", "@focus-guide/web", "start"]
+WORKDIR /app/apps/web
+CMD ["node_modules/.bin/next", "start", "-H", "0.0.0.0"]
