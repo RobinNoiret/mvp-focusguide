@@ -26,4 +26,4 @@ RUN pnpm --filter @focus-guide/web build
 
 EXPOSE 3000
 
-CMD ["pnpm", "--filter", "@focus-guide/web", "start"]
+CMD ["sh", "-c", "yes | pnpm --filter @focus-guide/web start"]
