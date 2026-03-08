@@ -14,7 +14,7 @@ COPY packages/shared/package.json ./packages/shared/
 COPY packages/config/package.json ./packages/config/
 
 # Installer les dépendances
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --force
 
 # Copier le code source
 COPY apps/web ./apps/web
@@ -26,4 +26,4 @@ RUN pnpm --filter @focus-guide/web build
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "yes | pnpm --filter @focus-guide/web start"]
+CMD ["pnpm", "--filter", "@focus-guide/web", "start"]
