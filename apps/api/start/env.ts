@@ -45,6 +45,14 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   /*
   |----------------------------------------------------------
+  | Variables for configuring Redis
+  |----------------------------------------------------------
+  */
+  REDIS_HOST: Env.schema.string({ format: 'host' }),
+  REDIS_PORT: Env.schema.number(),
+
+  /*
+  |----------------------------------------------------------
   | Variables for configuring email service
   |----------------------------------------------------------
   */
