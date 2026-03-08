@@ -22,5 +22,4 @@ COPY packages/config ./packages/config
 RUN pnpm --filter @focus-guide/web build
 
 EXPOSE 3000
-WORKDIR /app/apps/web
-CMD ["node_modules/.bin/next", "start", "-H", "0.0.0.0"]
+CMD ["sh", "-c", "/app/node_modules/.bin/next start -H 0.0.0.0 -p ${PORT:-3000}"]
