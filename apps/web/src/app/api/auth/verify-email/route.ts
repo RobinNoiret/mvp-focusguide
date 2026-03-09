@@ -4,7 +4,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333/v1'
+    const backendUrl = process.env.API_URL || 'http://localhost:3333/v1'
 
     // Call the AdonisJS API
     const response = await fetch(`${backendUrl}/auth/verify-email`, {

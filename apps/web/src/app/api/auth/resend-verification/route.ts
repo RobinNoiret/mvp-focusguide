@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333/v1'
+    const backendUrl = process.env.API_URL || 'http://localhost:3333/v1'
 
     // Call the AdonisJS API (requires auth token in Authorization header)
     const response = await fetch(`${backendUrl}/auth/resend-verification`, {
