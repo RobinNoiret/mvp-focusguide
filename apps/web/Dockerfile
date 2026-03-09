@@ -20,5 +20,6 @@ COPY packages/config ./packages/config
 
 RUN echo "=== STARTING BUILD ===" && pnpm --filter @focus-guide/web build && echo "=== BUILD COMPLETE ==="
 
+WORKDIR /app/apps/web
 EXPOSE 3000
-CMD ["/app/node_modules/.bin/next", "start", "-H", "0.0.0.0", "-p", "3000"]
+CMD ["next", "start", "-H", "0.0.0.0", "-p", "3000"]
