@@ -17,6 +17,7 @@ export default function RegisterPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
+  const [isRegistered, setIsRegistered] = useState(false)
 
   const {
     register,
@@ -40,8 +41,8 @@ export default function RegisterPage() {
         name: data.name,
       })
 
-      // Redirect to email verification prompt
-      router.push('/verify-email')
+      // Show success confirmation
+      setIsRegistered(true)
     } catch (error: unknown) {
       const axiosError = error as { response?: { data?: { error?: string } } }
       setApiError(
@@ -51,6 +52,30 @@ export default function RegisterPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (isRegistered) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl text-dark">Compte créé avec succès !</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg bg-green-50 p-4 text-sm text-green-700">
+              <p className="font-medium">Bienvenue ! 🎉</p>
+              <p className="mt-2">Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>
+            </div>
+            <Button
+              onClick={() => router.push('/login')}
+              className="w-full bg-chartreuse text-dark hover:bg-chartreuse/90"
+            >
+              Retour au login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
