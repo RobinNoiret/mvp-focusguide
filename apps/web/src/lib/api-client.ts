@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useAuthStore } from '@/stores/auth-store'
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333/v1',
+  baseURL: '/api',  // Routes to Next.js API proxy (all requests go through frontend)
   headers: {
     'Content-Type': 'application/json',
   },
