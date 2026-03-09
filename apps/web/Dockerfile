@@ -18,7 +18,10 @@ COPY apps/web ./apps/web
 COPY packages/shared ./packages/shared
 COPY packages/config ./packages/config
 
-RUN pnpm --filter @focus-guide/web build
+RUN echo "=== CHECKING @focus-guide/web ===" && ls -la apps/web/
+RUN echo "=== CHECKING shared ===" && ls -la packages/shared/
+RUN echo "=== STARTING BUILD ===" && pnpm --filter @focus-guide/web build --verbose && echo "=== BUILD COMPLETE ==="
+RUN echo "=== CHECKING .next ===" && ls -la apps/web/.next/ | head -20
 
 EXPOSE 3000
 CMD ["/app/node_modules/.bin/next", "start", "-H", "0.0.0.0", "-p", "3000"]
