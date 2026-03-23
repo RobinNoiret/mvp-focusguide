@@ -159,22 +159,25 @@ export default class ProjectsController {
   async destroy({ auth, params, response }: HttpContext) {
     const user = auth.getUserOrFail()
 
+    // Fetch project - include deleted ones for idempotent delete
+    const project = await Project.query()
+      .where('id', params.id)
+      .where('userId', user.id)
+      .first()
+
+    if (!project) {
+      throw new NotFoundException('Project', params.id)
+    }
+
+    // If already deleted, return success (idempotent)
+    if (project.deletedAt) {
+      return response.noContent()
+    }
+
     // AC 4: Start transaction for atomic cascade delete
     const trx = await db.transaction()
 
     try {
-      // Fetch project with ownership check
-      const project = await Project.query({ client: trx })
-        .where('id', params.id)
-        .where('userId', user.id)
-        .whereNull('deletedAt')
-        .first()
-
-      if (!project) {
-        await trx.rollback()
-        throw new NotFoundException('Project', params.id)
-      }
-
       const now = DateTime.now()
 
       // AC 4: Cascade soft delete all tasks in this project
@@ -183,9 +186,10 @@ export default class ProjectsController {
         .whereNull('deletedAt')
         .update({ deletedAt: now.toSQL() })
 
-      // Soft delete the project
-      project.deletedAt = now
-      await project.save()
+      // Soft delete the project (use transaction client for atomicity)
+      await Project.query({ client: trx })
+        .where('id', project.id)
+        .update({ deletedAt: now.toSQL() })
 
       await trx.commit()
 

@@ -72,11 +72,23 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     })
 
     if (!response.ok) {
-      const error = await response.json()
+      let error: unknown
+      const contentType = response.headers.get('content-type')
+      if (contentType?.includes('application/json')) {
+        error = await response.json()
+      } else {
+        error = { message: `HTTP ${response.status}` }
+      }
       return NextResponse.json(error, { status: response.status })
     }
 
-    return NextResponse.json(null, { status: response.status })
+    // 204 No Content has no body - cannot use .json() with 204
+    if (response.status === 204) {
+      return new NextResponse(null, { status: 204 })
+    }
+
+    const data = await response.json()
+    return NextResponse.json(data, { status: response.status })
   } catch {
     return NextResponse.json(
       { error: 'Failed to delete project' },
