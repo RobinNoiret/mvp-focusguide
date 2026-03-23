@@ -3,10 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     const authToken = request.cookies.get('auth_token')?.value
+    const backendUrl = process.env.API_URL || 'http://localhost:3333/v1'
 
     if (authToken) {
       // Call the AdonisJS logout endpoint
-      await fetch('http://localhost:3333/v1/auth/logout', {
+      await fetch(`${backendUrl}/auth/logout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${authToken}`,

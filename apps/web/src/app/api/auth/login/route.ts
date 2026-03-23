@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getCookieOptions, getRefreshTokenCookieOptions } from '@/lib/cookie-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,26 +29,21 @@ export async function POST(request: NextRequest) {
 
     // Set access token cookie (short-lived, httpOnly for security)
     res.cookies.set('auth_token', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      ...getCookieOptions(),
       maxAge: 15 * 60, // 15 minutes, matches access token lifetime
-      path: '/',
     })
 
     // Set refresh token cookie (long-lived, httpOnly for security)
     res.cookies.set('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      ...getRefreshTokenCookieOptions(),
       maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: '/api/auth/refresh',
     })
 
     return res
-  } catch {
+  } catch (error) {
+    console.error('Login error:', error)
     return NextResponse.json(
-      { error: 'Login failed' },
+      { error: 'Login failed', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }

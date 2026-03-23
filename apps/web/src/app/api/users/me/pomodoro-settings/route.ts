@@ -4,13 +4,20 @@ export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json()
     const backendUrl = process.env.API_URL || 'http://localhost:3333/v1'
-    const authHeader = request.headers.get('Authorization') || ''
+    const authToken = request.cookies.get('auth_token')?.value
+
+    if (!authToken) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
 
     const response = await fetch(`${backendUrl}/users/me/pomodoro-settings`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': authHeader,
+        'Authorization': `Bearer ${authToken}`,
       },
       body: JSON.stringify(body),
     })
@@ -22,7 +29,8 @@ export async function PATCH(request: NextRequest) {
 
     const data = await response.json()
     return NextResponse.json(data, { status: response.status })
-  } catch {
+  } catch (error) {
+    console.error('Update pomodoro settings error:', error)
     return NextResponse.json(
       { error: 'Failed to update pomodoro settings' },
       { status: 500 }
