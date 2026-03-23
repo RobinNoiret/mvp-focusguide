@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getCookieOptions, getRefreshTokenCookieOptions } from '@/lib/cookie-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,8 +12,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const backendUrl = process.env.API_URL || 'http://localhost:3333/v1'
+
     // Call the AdonisJS refresh endpoint
-    const response = await fetch('http://localhost:3333/v1/auth/refresh', {
+    const response = await fetch(`${backendUrl}/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -33,21 +36,15 @@ export async function POST(request: NextRequest) {
 
     // Update access token cookie (short-lived, httpOnly for security)
     res.cookies.set('auth_token', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      ...getCookieOptions(),
       maxAge: 15 * 60, // 15 minutes, matches access token lifetime
-      path: '/',
     })
 
     // Update refresh token cookie if provided
     if (newRefreshToken) {
       res.cookies.set('refresh_token', newRefreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
+        ...getRefreshTokenCookieOptions(),
         maxAge: 7 * 24 * 60 * 60, // 7 days
-        path: '/api/auth/refresh',
       })
     }
 

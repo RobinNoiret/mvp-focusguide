@@ -13,7 +13,6 @@ import {
   MoreVertical,
   LogOut,
   Settings,
-  User,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
@@ -311,14 +310,6 @@ export function Sidebar() {
                 isCollapsed ? 'left-full ml-2' : 'left-3'
               )}
             >
-              <Link
-                href="/account"
-                onClick={() => setUserMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-2 text-dark hover:bg-gray-100"
-              >
-                <User className="h-4 w-4" />
-                <span>Account</span>
-              </Link>
               <Link
                 href="/settings"
                 onClick={() => setUserMenuOpen(false)}
