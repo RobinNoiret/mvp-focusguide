@@ -94,24 +94,54 @@ export default class TasksController {
   }
 
   async destroy({ params, auth, response }: HttpContext) {
+    console.log('[TASK DESTROY] Called with id:', params.id)
     const user = auth.getUserOrFail()
 
-    const task = await Task.query()
-      .where('id', params.id)
-      .whereNull('deletedAt')
-      .first()
+    try {
+      console.log('[TASK DESTROY] User authenticated:', user.id)
+      const task = await Task.query()
+        .where('id', params.id)
+        .first()
 
-    if (!task) {
-      throw new NotFoundException('Task', params.id)
+      console.log('[TASK DESTROY] Task found:', task ? 'YES' : 'NO')
+
+      if (!task) {
+        throw new NotFoundException('Task', params.id)
+      }
+
+      console.log('[TASK DESTROY] Ownership check - task userId:', task.userId, 'user id:', user.id)
+
+      if (task.userId !== user.id) {
+        throw new ForbiddenException('Not authorized to delete this task')
+      }
+
+      console.log('[TASK DESTROY] Task deletedAt:', task.deletedAt)
+
+      // If already deleted, return success (idempotent)
+      if (task.deletedAt) {
+        console.log('[TASK DESTROY] Already deleted, returning 204')
+        return response.noContent()
+      }
+
+      console.log('[TASK DESTROY] Performing UPDATE...')
+
+      // Use direct UPDATE to avoid model save issues
+      await Task.query()
+        .where('id', params.id)
+        .update({ deletedAt: DateTime.now() })
+
+      console.log('[TASK DESTROY] Update complete, returning 204')
+      console.log('[TASK DESTROY] About to call response.noContent()')
+      const result = response.noContent()
+      console.log('[TASK DESTROY] response.noContent() completed:', result)
+      return result
+    } catch (error) {
+      console.error('[TASK DELETE ERROR]', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        code: (error as any)?.code,
+        stack: error instanceof Error ? error.stack : 'No stack',
+      })
+      throw error
     }
-
-    if (task.userId !== user.id) {
-      throw new ForbiddenException('Not authorized to delete this task')
-    }
-
-    task.deletedAt = DateTime.now()
-    await task.save()
-
-    return response.noContent()
   }
 }
