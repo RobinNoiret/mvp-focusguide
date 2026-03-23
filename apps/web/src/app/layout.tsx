@@ -19,6 +19,9 @@ const primaryFont = Inter({
 export const metadata: Metadata = {
   title: "Focus Guide",
   description: "Manage your tasks and boost productivity",
+  icons: {
+    icon: "/icon_black_bg_green.svg",
+  },
 };
 
 export default function RootLayout({
