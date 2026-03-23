@@ -10,33 +10,19 @@ interface AccountSectionProps {
 export function AccountSection({ user }: AccountSectionProps) {
   return (
     <CollapsibleSection title="Account Information">
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div>
-          <label className="text-xs font-semibold text-ui-muted uppercase tracking-wide">
-            Name
-          </label>
-          <p className="mt-2 text-base text-dark font-medium">{user.name}</p>
+          <p className="text-xs text-ui-muted mb-1">Name</p>
+          <p className="text-sm text-dark">{user.name}</p>
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-ui-muted uppercase tracking-wide">
-            Email
-          </label>
-          <p className="mt-2 text-base text-dark font-medium">{user.email}</p>
+          <p className="text-xs text-ui-muted mb-1">Email</p>
+          <p className="text-sm text-dark">{user.email}</p>
         </div>
 
         {user.emailVerified && (
-          <div className="flex items-center gap-2 pt-2">
-            <div className="h-2 w-2 rounded-full bg-green-600"></div>
-            <span className="text-sm text-green-600 font-medium">Email verified</span>
-          </div>
-        )}
-
-        {!user.emailVerified && (
-          <div className="flex items-center gap-2 pt-2">
-            <div className="h-2 w-2 rounded-full bg-yellow-600"></div>
-            <span className="text-sm text-yellow-600 font-medium">Email not verified</span>
-          </div>
+          <p className="text-xs text-green-600">✓ Email verified</p>
         )}
       </div>
     </CollapsibleSection>

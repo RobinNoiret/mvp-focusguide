@@ -22,7 +22,7 @@ export const settingsService = {
   },
 
   async updatePomodoroSettings(settings: PomodoroSettings): Promise<PomodoroSettings> {
-    const response = await apiClient.post('/users/me/pomodoro-settings', settings)
+    const response = await apiClient.patch('/users/me/pomodoro-settings', settings)
     return response.data
   },
 }

@@ -1,0 +1,66 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { settingsService, type User } from '@/services/settings-service'
+import { AccountSection } from '@/components/settings/AccountSection'
+import { PomodoroSettingsSection } from '@/components/settings/PomodoroSettingsSection'
+
+export default function SettingsPage() {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setLoading(true)
+        const data = await settingsService.getUser()
+        setUser(data)
+      } catch (err) {
+        setError('Failed to load settings')
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUser()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-ui-muted">Loading...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-red-600">{error}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex-1 overflow-auto">
+      <div className="mx-auto max-w-2xl">
+        {/* Header */}
+        <div className="border-b border-ui-border px-6 py-6">
+          <h1 className="text-2xl font-semibold text-dark">Settings</h1>
+        </div>
+
+        {/* Settings Sections */}
+        <div className="px-6">
+          {user && (
+            <>
+              <AccountSection user={user} />
+              <PomodoroSettingsSection initialSettings={user.pomodoro_settings} />
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

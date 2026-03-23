@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json()
     const backendUrl = process.env.API_URL || 'http://localhost:3333/v1'
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(`${backendUrl}/users/me/pomodoro-settings`, {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`,
