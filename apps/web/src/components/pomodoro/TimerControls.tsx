@@ -12,7 +12,7 @@ export function TimerControls() {
     startTimer,
     pauseTimer,
     stopTimer,
-    restartTimer,
+    resetTimer,
   } = usePomodoroStore()
 
   // AC 7: Disable at 00:00 when not running
@@ -20,9 +20,9 @@ export function TimerControls() {
 
   return (
     <div className="flex items-center gap-4">
-      {/* AC 1, 6: Restart button */}
+      {/* AC 1, 6: Reset button */}
       <Button
-        onClick={restartTimer}
+        onClick={resetTimer}
         disabled={isDisabled}
         variant="ghost"
         size="icon"
@@ -37,7 +37,7 @@ export function TimerControls() {
           'transition-all duration-150',
           isDisabled && 'opacity-50 cursor-not-allowed'
         )}
-        aria-label="Redémarrer"
+        aria-label="Réinitialiser"
       >
         <RotateCcw className="h-6 w-6" />
       </Button>
