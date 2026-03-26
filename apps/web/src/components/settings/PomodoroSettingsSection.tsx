@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { CollapsibleSection } from './CollapsibleSection'
-import { settingsService, type PomodoroSettings } from '@/services/settings-service'
+import { userService } from '@/services/user-service'
+import type { PomodoroSettings } from '@/services/settings-service'
 import { cn } from '@/lib/utils'
 
 interface PomodoroSettingsSectionProps {
@@ -16,6 +18,7 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isDirty, setIsDirty] = useState(false)
+  const queryClient = useQueryClient()
 
   const handleSettingChange = (key: keyof PomodoroSettings, value: number | boolean) => {
     setSettings({ ...settings, [key]: value })
@@ -29,7 +32,9 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
       setSaving(true)
       setError(null)
 
-      await settingsService.updatePomodoroSettings(settings)
+      await userService.updatePomodoroSettings(settings)
+      // Invalidate React Query cache to refetch user data
+      await queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
       setSuccess(true)
       setIsDirty(false)
       onUpdate?.(settings)

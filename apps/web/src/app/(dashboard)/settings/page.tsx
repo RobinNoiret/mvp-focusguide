@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { settingsService, type User } from '@/services/settings-service'
+import { userService } from '@/services/user-service'
+import type { User } from '@/services/settings-service'
 import { AccountSection } from '@/components/settings/AccountSection'
 import { PomodoroSettingsSection } from '@/components/settings/PomodoroSettingsSection'
 
@@ -10,20 +11,20 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true)
-        const data = await settingsService.getUser()
-        setUser(data)
-      } catch (err) {
-        setError('Failed to load settings')
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchUser = async () => {
+    try {
+      setLoading(true)
+      const data = await userService.getMe()
+      setUser(data as User)
+    } catch (err) {
+      setError('Failed to load settings')
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchUser()
   }, [])
 
@@ -56,7 +57,7 @@ export default function SettingsPage() {
           {user && (
             <>
               <AccountSection user={user} />
-              <PomodoroSettingsSection initialSettings={user.pomodoro_settings} />
+              <PomodoroSettingsSection initialSettings={user.pomodoro_settings} onUpdate={fetchUser} />
             </>
           )}
         </div>
