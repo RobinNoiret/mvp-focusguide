@@ -13,14 +13,13 @@ import { PomodoroSettingsModal } from './PomodoroSettingsModal'
 export function PomodoroTimer() {
   const [settingsOpen, setSettingsOpen] = useState(false)
 
-  const {
-    timeRemaining,
-    isRunning,
-    mode,
-    currentCycle,
-    settings,
-    tick,
-  } = usePomodoroStore()
+  // Use selectors to avoid re-renders on every store change
+  const timeRemaining = usePomodoroStore((s) => s.timeRemaining)
+  const isRunning = usePomodoroStore((s) => s.isRunning)
+  const mode = usePomodoroStore((s) => s.mode)
+  const currentCycle = usePomodoroStore((s) => s.currentCycle)
+  const settings = usePomodoroStore((s) => s.settings)
+  const tick = usePomodoroStore((s) => s.tick)
 
   // AC 5: Load settings on mount
   useLoadPomodoroSettings()

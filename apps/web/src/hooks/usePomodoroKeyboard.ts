@@ -2,14 +2,13 @@ import { useEffect } from 'react'
 import { usePomodoroStore } from '@/stores/pomodoroStore'
 
 export function usePomodoroKeyboard() {
-  const {
-    isRunning,
-    timeRemaining,
-    startTimer,
-    pauseTimer,
-    stopTimer,
-    restartTimer,
-  } = usePomodoroStore()
+  // Use selectors to avoid re-registering listeners on every store change
+  const isRunning = usePomodoroStore((s) => s.isRunning)
+  const timeRemaining = usePomodoroStore((s) => s.timeRemaining)
+  const startTimer = usePomodoroStore((s) => s.startTimer)
+  const pauseTimer = usePomodoroStore((s) => s.pauseTimer)
+  const stopTimer = usePomodoroStore((s) => s.stopTimer)
+  const resetTimer = usePomodoroStore((s) => s.resetTimer)
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -35,10 +34,10 @@ export function usePomodoroKeyboard() {
           break
 
         case 'r':
-        case 'R': // AC 8: R for restart
+        case 'R': // AC 8: R for reset
           event.preventDefault()
           if (!isDisabled) {
-            restartTimer()
+            resetTimer()
           }
           break
 
@@ -61,5 +60,5 @@ export function usePomodoroKeyboard() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isRunning, timeRemaining, startTimer, pauseTimer, stopTimer, restartTimer])
+  }, [isRunning, timeRemaining, startTimer, pauseTimer, stopTimer, resetTimer])
 }

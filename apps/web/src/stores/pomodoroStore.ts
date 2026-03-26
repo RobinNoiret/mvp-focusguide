@@ -29,6 +29,7 @@ interface PomodoroStore {
   startTimer: () => void
   pauseTimer: () => void
   stopTimer: () => void
+  resetTimer: () => void
   restartTimer: () => void
 }
 
@@ -134,7 +135,21 @@ export const usePomodoroStore = create<PomodoroStore>()(
         })
       },
 
-      // AC 6: Restart current mode
+      // AC 6: Reset current mode to beginning without starting
+      resetTimer: () => {
+        const { mode, settings } = get()
+        const duration =
+          mode === 'focus'
+            ? settings.focusDuration * 60
+            : settings.breakDuration * 60
+
+        set({
+          timeRemaining: duration,
+          isRunning: false, // Do NOT restart
+        })
+      },
+
+      // AC 6: Restart current mode (resume/replay)
       restartTimer: () => {
         const { mode, settings } = get()
         const duration =

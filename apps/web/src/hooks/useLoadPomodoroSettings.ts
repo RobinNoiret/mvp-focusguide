@@ -9,7 +9,8 @@ export function useLoadPomodoroSettings() {
     queryFn: () => userService.getMe(),
   })
 
-  const { updateSettings } = usePomodoroStore()
+  // Use selector to get stable reference to updateSettings
+  const updateSettings = usePomodoroStore((s) => s.updateSettings)
 
   // AC 5: Load settings from backend
   useEffect(() => {

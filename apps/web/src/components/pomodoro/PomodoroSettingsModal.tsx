@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import {
@@ -66,6 +66,7 @@ export function PomodoroSettingsModal({
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<SettingsFormData>({
@@ -185,10 +186,16 @@ export function PomodoroSettingsModal({
                 <Label htmlFor="autoSwitch" className="cursor-pointer">
                   Passer automatiquement au suivant
                 </Label>
-                <Switch
-                  id="autoSwitch"
-                  {...register('autoSwitch')}
-                  defaultChecked={settings.autoSwitch}
+                <Controller
+                  name="autoSwitch"
+                  control={control}
+                  render={({ field }) => (
+                    <Switch
+                      id="autoSwitch"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
                 />
               </div>
             </div>

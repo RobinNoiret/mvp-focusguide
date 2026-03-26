@@ -5,15 +5,26 @@ import { cn } from '@/lib/utils'
 
 interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {
   defaultChecked?: boolean
+  onCheckedChange?: (checked: boolean) => void
 }
 
 const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
-  ({ className, defaultChecked, ...props }, ref) => {
-    const [checked, setChecked] = React.useState(defaultChecked || false)
+  ({ className, defaultChecked, onCheckedChange, ...props }, ref) => {
+    const [internalChecked, setInternalChecked] = React.useState(defaultChecked || false)
+
+    // Use external controlled value if provided, otherwise use internal state
+    const checked = props.checked !== undefined ? props.checked : internalChecked
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setChecked(e.target.checked)
+      setInternalChecked(e.target.checked)
       props.onChange?.(e)
+      onCheckedChange?.(e.target.checked)
+    }
+
+    const handleButtonClick = () => {
+      const newChecked = !checked
+      setInternalChecked(newChecked)
+      onCheckedChange?.(newChecked)
     }
 
     return (
@@ -33,14 +44,7 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
             checked ? 'bg-blue-500 focus:ring-blue-500' : 'bg-gray-300 focus:ring-gray-300',
             className
           )}
-          onClick={() => {
-            const input = ref as React.RefObject<HTMLInputElement>
-            if (input.current) {
-              input.current.checked = !input.current.checked
-              input.current.dispatchEvent(new Event('change', { bubbles: true }))
-              setChecked(!checked)
-            }
-          }}
+          onClick={handleButtonClick}
           aria-pressed={checked}
         >
           <span
