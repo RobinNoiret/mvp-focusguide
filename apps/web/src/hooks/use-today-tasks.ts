@@ -125,11 +125,6 @@ export function useUpdateTask() {
           }
         })
       }
-
-      // Invalidate calendar events when deadline changes
-      if (data.deadline) {
-        queryClient.invalidateQueries({ queryKey: ['calendar', 'events'] })
-      }
     },
 
     customSuccessMessage: 'Tâche modifiée',
