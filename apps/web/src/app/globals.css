@@ -149,12 +149,14 @@
 }
 
 .fc-button-primary {
-  @apply bg-chartreuse text-dark hover:bg-chartreuse/90 border-chartreuse;
+  @apply bg-chartreuse text-dark hover:bg-chartreuse/90 border-chartreuse px-4 py-2;
+  color: #0a0a0a !important;
 }
 
 .fc-button-primary:not(:disabled):active,
 .fc-button-primary:not(:disabled).fc-button-active {
   @apply bg-chartreuse/80 border-chartreuse;
+  color: #0a0a0a !important;
 }
 
 .fc-button-primary:disabled {
@@ -165,12 +167,16 @@
   @apply bg-chartreuse/90;
 }
 
+.fc-button {
+  @apply font-semibold;
+}
+
 .fc-toolbar.fc-header-toolbar {
   @apply mb-6 gap-4;
 }
 
 .fc-toolbar-title {
-  @apply text-xl font-semibold text-dark;
+  @apply text-2xl font-bold text-dark font-display;
 }
 
 .fc-daygrid {
@@ -178,8 +184,9 @@
 }
 
 .fc-col-header-cell {
-  @apply border-border bg-white text-dark font-semibold;
-  padding: 12px 0 !important;
+  @apply border-border bg-white text-dark font-bold;
+  padding: 16px 0 !important;
+  text-transform: capitalize;
 }
 
 .fc-daygrid-day {
@@ -212,10 +219,12 @@
 
 .fc-event-main {
   @apply bg-chartreuse text-dark px-2 py-1 rounded text-sm;
+  color: #0a0a0a !important;
 }
 
 .fc-event-title {
   @apply font-semibold;
+  color: #0a0a0a !important;
 }
 
 .fc-timegrid {

@@ -149,22 +149,13 @@ export function useUpdateProjectTask(projectId: string) {
       return { previousData: previousProject }
     },
 
-    onSuccess: (data) => {
-      // Invalidate project caches
-      queryClient.invalidateQueries({ queryKey: ['projects'] })
-
-      // Invalidate Today cache if task is in Today (bidirectional sync)
-      // This ensures that changes in project status are reflected in Today
-      if (data?.todayStatus) {
-        queryClient.invalidateQueries({ queryKey: ['today', 'tasks'] })
-      }
-    },
-
     customSuccessMessage: 'Tâche modifiée',
   })(
     {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['projects', projectId] })
+        // Refetch calendar immediately after any task update
+        queryClient.refetchQueries({ queryKey: ['calendar', 'events'] })
       },
     }
   )
@@ -199,19 +190,19 @@ export function useDeleteProjectTask(projectId: string) {
       return { previousData: previousProject }
     },
 
-    onSuccess: () => {
-      // Invalidate project caches
-      queryClient.invalidateQueries({ queryKey: ['projects'] })
-
-      // Invalidate Today cache in case the deleted task was in Today
-      queryClient.invalidateQueries({ queryKey: ['today', 'tasks'] })
-    },
-
     customSuccessMessage: 'Tâche supprimée',
   })(
     {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['projects', projectId] })
+        // Invalidate project caches
+        queryClient.invalidateQueries({ queryKey: ['projects'] })
+
+        // Invalidate Today cache in case the deleted task was in Today
+        queryClient.invalidateQueries({ queryKey: ['today', 'tasks'] })
+
+        // Refetch calendar immediately as a deleted task might affect the calendar view
+        queryClient.refetchQueries({ queryKey: ['calendar', 'events'] })
       },
     }
   )

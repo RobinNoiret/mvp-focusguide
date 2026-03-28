@@ -141,6 +141,10 @@ export function useUpdateTask() {
           )
         }
       },
+      onSuccess: () => {
+        // Refetch calendar immediately after any task update
+        queryClient.refetchQueries({ queryKey: ['calendar', 'events'] })
+      },
     }
   )
 }
@@ -148,22 +152,33 @@ export function useUpdateTask() {
 /**
  * Delete a task from Today
  */
-export const useDeleteTask = createMutationHook<string, void>({
-  mutationFn: (id) => taskService.deleteTask(id),
-  queryKey: ['today', 'tasks'],
-  mutationType: 'delete',
-  entityName: 'tâche',
+export function useDeleteTask() {
+  const queryClient = useQueryClient()
 
-  onOptimisticUpdate: (queryClient, id) => {
-    const previousTasks = queryClient.getQueryData<Task[]>(['today', 'tasks'])
-    queryClient.setQueryData<Task[]>(['today', 'tasks'], (old) =>
-      old?.filter((task) => task.id !== id)
-    )
-    return { previousData: previousTasks }
-  },
+  return createMutationHook<string, void>({
+    mutationFn: (id) => taskService.deleteTask(id),
+    queryKey: ['today', 'tasks'],
+    mutationType: 'delete',
+    entityName: 'tâche',
 
-  customSuccessMessage: 'Tâche supprimée',
-})
+    onOptimisticUpdate: (queryClient, id) => {
+      const previousTasks = queryClient.getQueryData<Task[]>(['today', 'tasks'])
+      queryClient.setQueryData<Task[]>(['today', 'tasks'], (old) =>
+        old?.filter((task) => task.id !== id)
+      )
+      return { previousData: previousTasks }
+    },
+
+    customSuccessMessage: 'Tâche supprimée',
+  })(
+    {
+      onSuccess: () => {
+        // Refetch calendar immediately as a deleted task might affect the calendar view
+        queryClient.refetchQueries({ queryKey: ['calendar', 'events'] })
+      },
+    }
+  )
+}
 
 /**
  * Remove a task from Today (unlink from Today but keep in project)

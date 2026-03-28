@@ -16,15 +16,117 @@ type ViewType = 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'
 export function CalendarView() {
   const { data: events, isLoading, error, refetch } = useCalendarEvents()
   const [currentView, setCurrentView] = useState<ViewType>('dayGridMonth')
+  const [calendarTitle, setCalendarTitle] = useState<string>('')
+  const [weekStart, setWeekStart] = useState<Date | null>(null)
+  const [weekEnd, setWeekEnd] = useState<Date | null>(null)
   const calendarRef = useRef<FullCalendar>(null)
   const updateTask = useUpdateTask()
   const queryClient = useQueryClient()
+
+  const updateTitle = (view?: ViewType) => {
+    if (calendarRef.current) {
+      const api = calendarRef.current.getApi()
+      const currentDate = api.getDate()
+      const viewToUse = view || currentView
+
+      let title = ''
+
+      if (viewToUse === 'timeGridDay') {
+        const options: Intl.DateTimeFormatOptions = {
+          day: 'numeric',
+          weekday: 'long',
+          month: 'long',
+          year: 'numeric',
+        }
+        const formatter = new Intl.DateTimeFormat('fr-FR', options)
+        title = formatter.format(currentDate)
+      } else if (viewToUse === 'timeGridWeek') {
+        // For week view, show the range of dates (Monday to Sunday)
+        if (weekStart && weekEnd) {
+          // Calculate Sunday (6 days after Monday)
+          const displayEnd = new Date(weekStart)
+          displayEnd.setDate(displayEnd.getDate() + 6)
+
+          const startFormatter = new Intl.DateTimeFormat('fr-FR', {
+            day: 'numeric',
+            month: 'long',
+          })
+          const endFormatter = new Intl.DateTimeFormat('fr-FR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })
+
+          title = `${startFormatter.format(weekStart)} - ${endFormatter.format(displayEnd)}`
+        }
+      } else {
+        // Month view
+        const options: Intl.DateTimeFormatOptions = {
+          month: 'long',
+          year: 'numeric',
+        }
+        const formatter = new Intl.DateTimeFormat('fr-FR', options)
+        title = formatter.format(currentDate)
+      }
+
+      setCalendarTitle(title.charAt(0).toUpperCase() + title.slice(1))
+    }
+  }
+
+  const handleDatesSet = (info: any) => {
+    setWeekStart(info.start)
+    setWeekEnd(info.end)
+
+    // Update title based on current view
+    const viewType = info.view.type as ViewType
+    const currentDate = info.view.currentStart
+
+    let title = ''
+
+    if (viewType === 'timeGridDay') {
+      const options: Intl.DateTimeFormatOptions = {
+        day: 'numeric',
+        weekday: 'long',
+        month: 'long',
+        year: 'numeric',
+      }
+      const formatter = new Intl.DateTimeFormat('fr-FR', options)
+      title = formatter.format(currentDate)
+    } else if (viewType === 'timeGridWeek') {
+      // Calculate Sunday (6 days after Monday)
+      const displayEnd = new Date(info.start)
+      displayEnd.setDate(displayEnd.getDate() + 6)
+
+      const startFormatter = new Intl.DateTimeFormat('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+      })
+      const endFormatter = new Intl.DateTimeFormat('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+
+      title = `${startFormatter.format(info.start)} - ${endFormatter.format(displayEnd)}`
+    } else {
+      // Month view
+      const options: Intl.DateTimeFormatOptions = {
+        month: 'long',
+        year: 'numeric',
+      }
+      const formatter = new Intl.DateTimeFormat('fr-FR', options)
+      title = formatter.format(currentDate)
+    }
+
+    setCalendarTitle(title.charAt(0).toUpperCase() + title.slice(1))
+  }
 
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view)
     if (calendarRef.current) {
       const calendarApi = calendarRef.current.getApi()
       calendarApi.changeView(view)
+      setTimeout(() => updateTitle(view), 0)
     }
   }
 
@@ -48,8 +150,10 @@ export function CalendarView() {
       {
         onSuccess: () => {
           toast.success('Deadline mise à jour')
-          // Invalider et refetch le cache
+          // Invalider les caches pour synchroniser partout
           queryClient.invalidateQueries({ queryKey: ['calendar', 'events'] })
+          queryClient.invalidateQueries({ queryKey: ['projects'] })
+          queryClient.invalidateQueries({ queryKey: ['today', 'tasks'] })
           refetch()
         },
         onError: () => {
@@ -90,9 +194,27 @@ export function CalendarView() {
     )
   }
 
+  const handlePrevious = () => {
+    if (calendarRef.current) {
+      calendarRef.current.getApi().prev()
+    }
+  }
+
+  const handleNext = () => {
+    if (calendarRef.current) {
+      calendarRef.current.getApi().next()
+    }
+  }
+
+  const handleToday = () => {
+    if (calendarRef.current) {
+      calendarRef.current.getApi().today()
+    }
+  }
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <CalendarHeader currentView={currentView} onViewChange={handleViewChange} />
+      <CalendarHeader currentView={currentView} onViewChange={handleViewChange} onPrevious={handlePrevious} onNext={handleNext} onToday={handleToday} calendarTitle={calendarTitle} />
       <div className="flex-1 overflow-auto p-6">
         <div className="bg-white rounded-lg border border-border">
           <FullCalendar
@@ -101,11 +223,12 @@ export function CalendarView() {
             initialView={currentView}
             events={events || []}
             headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
+              left: '',
+              center: '',
               right: '',
             }}
             locale="fr"
+            datesSet={handleDatesSet}
             height="auto"
             contentHeight="auto"
             editable={true}
