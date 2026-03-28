@@ -141,3 +141,139 @@
     border-radius: 3px;
   }
 }
+
+/* FullCalendar Styling */
+.fc {
+  font-family: inherit;
+  background: transparent;
+}
+
+.fc-button-primary {
+  @apply bg-chartreuse text-dark hover:bg-chartreuse/90 border-chartreuse;
+}
+
+.fc-button-primary:not(:disabled):active,
+.fc-button-primary:not(:disabled).fc-button-active {
+  @apply bg-chartreuse/80 border-chartreuse;
+}
+
+.fc-button-primary:disabled {
+  @apply opacity-50;
+}
+
+.fc-button-primary:not(:disabled):hover {
+  @apply bg-chartreuse/90;
+}
+
+.fc-toolbar.fc-header-toolbar {
+  @apply mb-6 gap-4;
+}
+
+.fc-toolbar-title {
+  @apply text-xl font-semibold text-dark;
+}
+
+.fc-daygrid {
+  @apply border-border;
+}
+
+.fc-col-header-cell {
+  @apply border-border bg-white text-dark font-semibold;
+  padding: 12px 0 !important;
+}
+
+.fc-daygrid-day {
+  @apply border-border bg-white;
+}
+
+.fc-daygrid-day-number {
+  @apply text-dark p-2;
+}
+
+.fc-daygrid-day-frame {
+  @apply min-h-24;
+}
+
+.fc-daygrid-day-bg {
+  @apply bg-white;
+}
+
+.fc-daygrid-day.fc-day-today {
+  @apply bg-chartreuse/10;
+}
+
+.fc-daygrid-day.fc-day-other {
+  @apply opacity-50;
+}
+
+.fc-event {
+  @apply border-none;
+}
+
+.fc-event-main {
+  @apply bg-chartreuse text-dark px-2 py-1 rounded text-sm;
+}
+
+.fc-event-title {
+  @apply font-semibold;
+}
+
+.fc-timegrid {
+  @apply border-border;
+}
+
+.fc-timegrid-slot {
+  @apply border-border;
+}
+
+.fc-col-header {
+  @apply bg-white;
+}
+
+.fc-col-header-cell {
+  @apply border-border;
+}
+
+.fc-daygrid-body {
+  @apply border-border;
+}
+
+.fc-scrollgrid {
+  @apply border-border;
+}
+
+.fc-scrollgrid-sync-inner {
+  @apply bg-white;
+}
+
+.fc-daygrid-day-bg {
+  @apply bg-white;
+}
+
+.fc-button-group {
+  @apply flex gap-2;
+}
+
+.fc-button-group > * {
+  @apply ml-0;
+}
+
+.fc-daygrid-day-number {
+  @apply text-dark;
+}
+
+.fc-daygrid-day-frame {
+  @apply bg-white;
+}
+
+.fc-button-primary:not(:disabled).fc-button-active {
+  @apply bg-chartreuse/80;
+}
+
+.fc-highlight {
+  @apply bg-chartreuse/5;
+}
+
+.fc-today-highlight {
+  @apply bg-chartreuse/10;
+}

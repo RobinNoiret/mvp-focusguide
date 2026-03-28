@@ -30,7 +30,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Today', href: '/today', icon: Home },
-  { label: 'Calendrier', href: '/calendar', icon: Calendar, disabled: true },
+  { label: 'Calendrier', href: '/calendar', icon: Calendar },
   { label: 'Projets', href: '/projets', icon: Folder },
   { label: 'Pomodoro', href: '/pomodoro', icon: Timer },
 ]

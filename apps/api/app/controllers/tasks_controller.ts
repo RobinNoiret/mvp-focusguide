@@ -35,6 +35,27 @@ export default class TasksController {
     return tasks
   }
 
+  async calendar({ auth }: HttpContext) {
+    const user = auth.getUserOrFail()
+
+    const tasks = await Task.query()
+      .where('userId', user.id)
+      .whereNotNull('deadline')
+      .whereNull('deletedAt')
+      .orderBy('deadline', 'asc')
+
+    // Transform tasks to calendar event format
+    const events = tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      start: task.deadline?.toISO(),
+      end: task.deadline?.toISO(),
+      backgroundColor: task.todayStatus === 'done' ? '#d1d5db' : '#D9FC00', // chartreuse
+    }))
+
+    return events
+  }
+
   async update({ params, request, auth, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const data = await request.validateUsing(updateTaskValidator)
