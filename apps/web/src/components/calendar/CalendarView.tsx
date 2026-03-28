@@ -48,6 +48,8 @@ export function CalendarView() {
       {
         onSuccess: () => {
           toast.success('Deadline mise à jour')
+          // Invalider et refetch le cache
+          queryClient.invalidateQueries({ queryKey: ['calendar', 'events'] })
           refetch()
         },
         onError: () => {

@@ -8,6 +8,9 @@ export function useCalendarEvents() {
   return useQuery({
     queryKey: ['calendar', 'events'],
     queryFn: () => calendarService.getCalendarEvents(),
-    staleTime: REACT_QUERY_DEFAULTS.STALE_TIME.TODAY_TASKS,
+    // Shorter stale time for better synchronization when tasks are modified
+    staleTime: 30 * 1000, // 30 seconds instead of default
+    refetchOnWindowFocus: true, // Refetch when user returns to window
+    refetchOnReconnect: true, // Refetch when connection is restored
   })
 }
