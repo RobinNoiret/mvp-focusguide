@@ -277,3 +277,46 @@
 .fc-today-highlight {
   @apply bg-chartreuse/10;
 }
+
+/* Drag and Drop Styling */
+.fc-event {
+  @apply cursor-grab;
+}
+
+.fc-event:hover {
+  @apply opacity-80;
+}
+
+.fc-event.fc-dragging,
+.fc-event.fc-dragging-over {
+  @apply shadow-lg;
+}
+
+.fc-event-dragging {
+  @apply opacity-70 shadow-xl;
+}
+
+.fc-event-drag-start {
+  @apply cursor-grabbing;
+}
+
+.fc-daygrid-day.fc-drop-active {
+  @apply bg-chartreuse/20;
+}
+
+.fc-daygrid-day-frame.fc-drop-active {
+  @apply bg-chartreuse/20;
+}
+
+/* Selection Styling */
+.fc-daygrid-day.fc-day-selected {
+  @apply bg-chartreuse/20;
+}
+
+.fc-timegrid-slot.fc-selected {
+  @apply bg-chartreuse/20;
+}
+
+.fc-selection {
+  @apply bg-chartreuse/20;
+}

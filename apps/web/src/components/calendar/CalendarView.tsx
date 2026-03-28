@@ -5,16 +5,20 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { CalendarApi } from '@fullcalendar/core'
+import { useQueryClient } from '@tanstack/react-query'
 import { useCalendarEvents } from '@/hooks/use-calendar-events'
+import { useUpdateTask } from '@/hooks/use-today-tasks'
 import { CalendarHeader } from './CalendarHeader'
+import { toast } from 'sonner'
 
 type ViewType = 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'
 
 export function CalendarView() {
-  const { data: events, isLoading, error } = useCalendarEvents()
+  const { data: events, isLoading, error, refetch } = useCalendarEvents()
   const [currentView, setCurrentView] = useState<ViewType>('dayGridMonth')
   const calendarRef = useRef<FullCalendar>(null)
+  const updateTask = useUpdateTask()
+  const queryClient = useQueryClient()
 
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view)
@@ -22,6 +26,42 @@ export function CalendarView() {
       const calendarApi = calendarRef.current.getApi()
       calendarApi.changeView(view)
     }
+  }
+
+  const handleEventDrop = (info: any) => {
+    const taskId = info.event.id
+    const newStart = info.event.start
+
+    if (!newStart) {
+      toast.error('Impossible de mettre à jour la date')
+      info.revert()
+      return
+    }
+
+    updateTask.mutate(
+      {
+        id: taskId,
+        data: {
+          deadline: newStart.toISOString(),
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Deadline mise à jour')
+          refetch()
+        },
+        onError: () => {
+          toast.error('Erreur lors de la mise à jour')
+          info.revert()
+        },
+      }
+    )
+  }
+
+  const handleDateClick = (info: any) => {
+    const selectedDate = info.dateStr
+    console.log('Date clicked:', selectedDate)
+    // Vous pouvez ajouter ici une modal de création de tâche avec la date présélectionnée
   }
 
   if (isLoading) {
@@ -66,6 +106,11 @@ export function CalendarView() {
             locale="fr"
             height="auto"
             contentHeight="auto"
+            editable={true}
+            selectable={true}
+            selectConstraint="businessHours"
+            eventDrop={handleEventDrop}
+            dateClick={handleDateClick}
             slotLabelFormat={{
               hour: 'numeric',
               minute: '2-digit',
