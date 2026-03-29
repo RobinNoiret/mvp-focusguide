@@ -14,6 +14,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const TasksController = () => import('#controllers/tasks_controller')
 const ProjectsController = () => import('#controllers/projects_controller')
 const UsersController = () => import('#controllers/users_controller')
+const CalendarEventsController = () => import('#controllers/calendar_events_controller')
 
 router.get('/', async () => {
   return {
@@ -41,6 +42,9 @@ router
     router
       .patch('/users/me/pomodoro-settings', [UsersController, 'updatePomodoroSettings'])
       .use(middleware.auth())
+    router
+      .patch('/users/me/calendar-settings', [UsersController, 'updateCalendarSettings'])
+      .use(middleware.auth())
 
     // Task routes
     router.post('/tasks', [TasksController, 'store']).use(middleware.auth())
@@ -55,5 +59,11 @@ router
     router.get('/projects/:id', [ProjectsController, 'show']).use(middleware.auth())
     router.patch('/projects/:id', [ProjectsController, 'update']).use(middleware.auth())
     router.delete('/projects/:id', [ProjectsController, 'destroy']).use(middleware.auth())
+
+    // Calendar event routes
+    router.get('/calendar-events', [CalendarEventsController, 'index']).use(middleware.auth())
+    router.post('/calendar-events', [CalendarEventsController, 'store']).use(middleware.auth())
+    router.patch('/calendar-events/:id', [CalendarEventsController, 'update']).use(middleware.auth())
+    router.delete('/calendar-events/:id', [CalendarEventsController, 'destroy']).use(middleware.auth())
   })
   .prefix('/v1')

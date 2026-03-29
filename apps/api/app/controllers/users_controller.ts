@@ -12,6 +12,7 @@ export default class UsersController {
       name: user.name,
       emailVerified: user.emailVerified,
       pomodoro_settings: user.pomodoroSettings,
+      calendar_settings: user.calendarSettings,
     })
   }
 
@@ -52,5 +53,23 @@ export default class UsersController {
     await user.save()
 
     return response.ok(user.pomodoroSettings)
+  }
+
+  // Update Calendar settings
+  async updateCalendarSettings({ auth, request, response }: HttpContext) {
+    const user = await auth.authenticateUsing(['api'])
+
+    const settings = request.only(['weekStartDay'])
+
+    // Validate settings
+    if (typeof settings.weekStartDay !== 'number' || settings.weekStartDay < 0 || settings.weekStartDay > 6) {
+      throw new BadRequestException('Invalid calendar settings')
+    }
+
+    // Update JSONB field
+    user.calendarSettings = settings
+    await user.save()
+
+    return response.ok(user.calendarSettings)
   }
 }

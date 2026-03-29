@@ -51,6 +51,20 @@ export default class TasksController {
       start: task.deadline?.toISO(),
       end: task.deadline?.toISO(),
       backgroundColor: task.todayStatus === 'done' ? '#d1d5db' : '#D9FC00', // chartreuse
+      extendedProps: {
+        // Include full task data for editing
+        task: {
+          id: task.id,
+          title: task.title,
+          notes: task.notes,
+          deadline: task.deadline?.toISO(),
+          todayStatus: task.todayStatus,
+          projectStatus: task.projectStatus,
+          projectId: task.projectId,
+          createdAt: task.createdAt.toISO(),
+          updatedAt: task.updatedAt.toISO(),
+        },
+      },
     }))
 
     return events

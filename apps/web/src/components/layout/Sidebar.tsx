@@ -13,6 +13,7 @@ import {
   MoreVertical,
   LogOut,
   Settings,
+  CheckSquare,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
@@ -29,8 +30,9 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Today', href: '/today', icon: Home },
+  { label: 'Dashboard', href: '/today', icon: Home },
   { label: 'Calendrier', href: '/calendar', icon: Calendar },
+  { label: 'To Do', href: '/to-do', icon: CheckSquare },
   { label: 'Projets', href: '/projets', icon: Folder },
   { label: 'Pomodoro', href: '/pomodoro', icon: Timer },
 ]

@@ -1,235 +1,222 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import { Flag } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  DragOverEvent,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  closestCorners,
-} from '@dnd-kit/core'
-import { KanbanBoard } from '@/components/kanban'
-import { ColumnStatus } from '@/components/kanban/KanbanColumn'
-import { TaskCard } from '@/components/kanban/TaskCard'
-import { CreateTaskModal } from '@/components/modals/CreateTaskModal'
-import { ResponsiveSidePanel } from '@/components/today/ResponsiveSidePanel'
+  useCalendarEventsQuery,
+  useUpdateCalendarEvent,
+} from '@/hooks/use-calendar-events'
+import { useCalendarDeadlines } from '@/hooks/use-calendar-deadlines'
 import { useTodayTasks, useUpdateTask } from '@/hooks/use-today-tasks'
-import type { Task, TaskStatus } from '@focus-guide/shared'
+import { userService } from '@/services/user-service'
+import { TaskCard } from '@/components/kanban/TaskCard'
+import { toast } from 'sonner'
 
-export default function TodayPage() {
-  const { data: tasks, isLoading, error } = useTodayTasks()
+export default function DashboardPage() {
+  const { data: deadlineEvents } = useCalendarDeadlines()
+  const { data: userEvents } = useCalendarEventsQuery()
+  const { data: tasks } = useTodayTasks()
+  const [firstDay, setFirstDay] = useState<number>(1) // Default to Monday
   const updateTask = useUpdateTask()
+  const updateCalendarEvent = useUpdateCalendarEvent()
   const queryClient = useQueryClient()
-  const [modalOpen, setModalOpen] = useState(false)
-  const [selectedColumn, setSelectedColumn] = useState<TaskStatus>('todo')
-  const [activeTask, setActiveTask] = useState<Task | null>(null)
-  const [sidePanelExpanded, setSidePanelExpanded] = useState(true)
 
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    })
-  )
-
-  const handleAddTask = (columnId: ColumnStatus) => {
-    setSelectedColumn(columnId)
-    setModalOpen(true)
-  }
-
-  const handleDragStart = (event: DragStartEvent) => {
-    // Handle both Today tasks and panel tasks
-    const task = event.active.data.current?.task
-    if (task) {
-      setActiveTask(task)
-    } else {
-      // Fallback for Today tasks (find by ID, remove 'panel-' prefix if present)
-      const taskId = (event.active.id as string).replace('panel-', '')
-      const todayTask = tasks?.find((t) => t.id === taskId)
-      setActiveTask(todayTask || null)
-    }
-  }
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const { over, active } = event
-    if (!over) return
-
-    // AC 3: Only allow drops in Backlog and À faire aujourd'hui for panel tasks
-    const task = active.data.current?.task as Task
-    const isFromPanel = task?.projectId && !task.todayStatus
-
-    if (isFromPanel) {
-      const allowedColumns: TaskStatus[] = ['backlog', 'todo']
-      const targetColumn = over.id as TaskStatus
-      // Prevent drop feedback if column is invalid
-      if (!allowedColumns.includes(targetColumn)) {
-        return
+  // Fetch user calendar settings on mount
+  useEffect(() => {
+    const fetchUserSettings = async () => {
+      try {
+        const user = await userService.getMe()
+        if (user.calendar_settings?.weekStartDay !== undefined) {
+          setFirstDay(user.calendar_settings.weekStartDay)
+        }
+      } catch (err) {
+        console.error('Failed to fetch user settings:', err)
       }
     }
-  }
+    fetchUserSettings()
+  }, [])
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
+  // Get only "À faire aujourd'hui" tasks
+  const todayTasks = tasks?.filter((t) => t.todayStatus === 'todo') || []
 
-    if (!over) {
-      setActiveTask(null)
+  // Merge calendar events
+  const mergedEvents = useMemo(() => {
+    const allEvents = []
+
+    if (deadlineEvents) {
+      allEvents.push(
+        ...deadlineEvents.map((event) => ({
+          ...event,
+          allDay: true,
+          editable: true,
+          extendedProps: {
+            type: 'deadline',
+            task: event.extendedProps?.task,
+          },
+        }))
+      )
+    }
+
+    if (userEvents) {
+      allEvents.push(
+        ...userEvents.map((event) => ({
+          id: event.id,
+          title: event.title,
+          start: event.startDate,
+          end: event.endDate || undefined,
+          allDay: event.isAllDay,
+          backgroundColor: '#00FCD9',
+          textColor: '#0a0a0a',
+          editable: true,
+          extendedProps: { type: 'event' },
+        }))
+      )
+    }
+
+    return allEvents
+  }, [deadlineEvents, userEvents])
+
+  const handleEventDrop = (info: any) => {
+    const eventType = info.event.extendedProps?.type
+
+    if (eventType === 'event') {
+      const newStart = info.event.start
+      if (!newStart) {
+        toast.error('Impossible de mettre à jour la date')
+        info.revert()
+        return
+      }
+
+      const isoStart = newStart.toISOString()
+      const isoEnd = info.event.end ? new Date(info.event.end).toISOString() : null
+
+      updateCalendarEvent.mutate(
+        {
+          id: info.event.id,
+          data: {
+            startDate: isoStart,
+            endDate: isoEnd,
+          },
+        },
+        {
+          onError: () => {
+            toast.error('Erreur lors de la mise à jour')
+            info.revert()
+          },
+        }
+      )
       return
     }
 
-    const activeId = active.id as string
-    const isFromPanel = activeId.startsWith('panel-') // Tasks from sidebar have 'panel-' prefix
+    const taskId = info.event.id
+    const newStart = info.event.start
 
-    let taskId = activeId
-    if (isFromPanel) {
-      // Remove 'panel-' prefix to get actual task ID
-      taskId = activeId.replace('panel-', '')
+    if (!newStart) {
+      toast.error('Impossible de mettre à jour la date')
+      info.revert()
+      return
     }
 
-    const newStatus = over.id as TaskStatus
-
-    if (isFromPanel) {
-      // AC 2, 3: Dropping a task from panel into kanban
-      // The task will be added to Today with the target status
-      // Note: Project sync will handle status mapping (Today status → Project status)
-
-      // Optimistic update: add task to Today immediately
-      if (activeTask) {
-        queryClient.setQueryData<Task[]>(['today', 'tasks'], (old) => {
-          const exists = old?.some((t) => t.id === taskId)
-          if (!exists) {
-            const newTask: Task = {
-              ...activeTask,
-              todayStatus: newStatus,
-              updatedAt: new Date().toISOString(),
-            }
-            return [newTask, ...(old || [])]
-          }
-          return old
-        })
-      }
-
-      // AC 5, 6: Update task with today_status on server
-      updateTask.mutate(
-        {
-          id: taskId,
-          data: { todayStatus: newStatus },
+    updateTask.mutate(
+      {
+        id: taskId,
+        data: {
+          deadline: newStart.toISOString(),
         },
-        {
-          onSettled: () => {
-            setActiveTask(null)
-          },
-        }
-      )
-    } else {
-      // Handle Today task drag within Today columns
-      const task = tasks?.find((t) => t.id === taskId)
-
-      if (!task || task.todayStatus === newStatus) {
-        setActiveTask(null)
-        return
-      }
-
-      // Keep activeTask set during the mutation so DragOverlay stays visible
-      // The optimistic update will handle showing the task in the new column
-      updateTask.mutate(
-        {
-          id: taskId,
-          data: { todayStatus: newStatus },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Deadline mise à jour')
+          queryClient.invalidateQueries({ queryKey: ['calendar', 'events'] })
+          queryClient.invalidateQueries({ queryKey: ['projects'] })
+          queryClient.invalidateQueries({ queryKey: ['today', 'tasks'] })
         },
-        {
-          onSettled: () => {
-            // Only clear activeTask after mutation is done
-            setActiveTask(null)
-          },
-        }
-      )
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="animate-pulse text-gray-500">Chargement...</div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500">Erreur lors du chargement des tâches</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-2 text-sm text-chartreuse hover:underline"
-          >
-            Réessayer
-          </button>
-        </div>
-      </div>
+        onError: () => {
+          toast.error('Erreur lors de la mise à jour')
+          info.revert()
+        },
+      }
     )
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="flex h-full flex-row overflow-hidden">
-        {/* Main content area with header and kanban */}
-        <div className="flex flex-1 flex-col overflow-hidden">
-          {/* Header */}
-          <div className="border-b border-gray-200 p-6">
-            <h1 className="text-3xl font-bold font-display text-dark">Tâches</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Gérez vos tâches quotidiennes
-            </p>
-          </div>
-
-          {/* Kanban area */}
-          <div className="flex-1 overflow-auto p-6">
-            <KanbanBoard
-              tasks={tasks?.filter((t) => t.id !== activeTask?.id) || []}
-              onAddTask={handleAddTask}
-            />
-          </div>
-        </div>
-
-        {/* AC 1, 6: Side panel on the right with responsive behavior - full height */}
-        <ResponsiveSidePanel
-          isExpanded={sidePanelExpanded}
-          onToggleExpand={setSidePanelExpanded}
-          activeTask={activeTask}
-        >
-          {/* AC 3: Empty initially, will be populated in Story 3.3 */}
-        </ResponsiveSidePanel>
-
-        <DragOverlay>
-          {activeTask && <TaskCard task={activeTask} isDragging />}
-        </DragOverlay>
+    <div className="flex h-full flex-col overflow-hidden bg-gray-50">
+      <div className="border-b border-gray-200 p-6 bg-white">
+        <h1 className="text-3xl font-bold font-display text-dark">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Vue d'ensemble de votre semaine et tâches du jour
+        </p>
       </div>
 
-      <CreateTaskModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        columnStatus={selectedColumn}
-      />
-    </DndContext>
+      <div className="flex-1 overflow-hidden">
+        <div className="grid grid-cols-3 gap-6 p-6 h-full">
+          {/* Calendar - 2 columns */}
+          <div className="col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+            {/* Calendar content */}
+            <div className="flex-1 overflow-auto">
+              <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                initialView="timeGridWeek"
+                events={mergedEvents}
+                headerToolbar={{
+                  left: '',
+                  center: '',
+                  right: '',
+                }}
+                locale="fr"
+                firstDay={firstDay}
+                height="100%"
+                contentHeight="auto"
+                editable={true}
+                eventDrop={handleEventDrop}
+                slotLabelFormat={{
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  meridiem: 'short',
+                }}
+                eventDisplay="block"
+                dayHeaderFormat={{ weekday: 'short', month: 'numeric', day: 'numeric' }}
+                eventContent={(info) => {
+                  const eventType = info.event.extendedProps?.type
+                  if (eventType === 'deadline') {
+                    return (
+                      <div className="flex items-center gap-1 text-xs font-medium px-1">
+                        <Flag size={12} />
+                        <span>{info.event.title}</span>
+                      </div>
+                    )
+                  }
+                  return <span className="text-xs font-medium px-1">{info.event.title}</span>
+                }}
+              />
+            </div>
+          </div>
+
+          {/* À faire aujourd'hui - 1 column */}
+          <div className="col-span-1 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+            <div className="border-b border-gray-200 p-4">
+              <h2 className="font-semibold text-dark">À faire aujourd'hui</h2>
+              <p className="text-xs text-gray-500 mt-1">{todayTasks.length} tâche(s)</p>
+            </div>
+            <div className="flex-1 overflow-auto p-3 space-y-2">
+              {todayTasks.length === 0 ? (
+                <p className="text-center text-gray-400 text-sm py-8">
+                  Aucune tâche pour aujourd'hui
+                </p>
+              ) : (
+                todayTasks.map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

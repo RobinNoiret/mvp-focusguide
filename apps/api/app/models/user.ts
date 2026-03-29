@@ -35,6 +35,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare pomodoroSettings: Record<string, any>
 
+  @column()
+  declare calendarSettings: Record<string, any>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

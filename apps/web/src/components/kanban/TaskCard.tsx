@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
-import { Check, Pencil, Trash2, X } from 'lucide-react'
+import { Check, Pencil, Trash2, X, Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUpdateTask, useDeleteTask, useUnlinkTask } from '@/hooks/use-today-tasks'
+import { useProjects } from '@/hooks/use-projects'
 import { EditTaskModal } from '@/components/modals/EditTaskModal'
 import { DeleteConfirmationDialog } from '@/components/modals/DeleteConfirmationDialog'
 import type { Task } from '@focus-guide/shared'
@@ -18,6 +19,8 @@ interface TaskCardProps {
 export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
+  const { data: projects } = useProjects()
 
   const {
     attributes,
@@ -35,6 +38,9 @@ export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps)
   const unlinkTask = useUnlinkTask()
 
   const isDone = task.todayStatus === 'done'
+  const project = task.projectId
+    ? projects?.find((p) => p.id === task.projectId)
+    : null
 
   const handleToggleComplete = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -111,6 +117,24 @@ export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps)
                   : task.notes}
               </p>
             )}
+
+            {/* Metadata row */}
+            <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+              {task.deadline && (
+                <span className="flex items-center gap-1 text-amber-600">
+                  <Calendar className="w-3 h-3" />
+                  {new Date(task.deadline).toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                  })}
+                </span>
+              )}
+              {project && (
+                <span className="rounded-full bg-chartreuse px-2 py-0.5 text-dark font-medium">
+                  {project.title}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

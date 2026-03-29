@@ -1,0 +1,215 @@
+'use client'
+
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  DragOverEvent,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+} from '@dnd-kit/core'
+import { KanbanBoard } from '@/components/kanban'
+import { ColumnStatus } from '@/components/kanban/KanbanColumn'
+import { TaskCard } from '@/components/kanban/TaskCard'
+import { CreateTaskModal } from '@/components/modals/CreateTaskModal'
+import { ResponsiveSidePanel } from '@/components/today/ResponsiveSidePanel'
+import { useTodayTasks, useUpdateTask } from '@/hooks/use-today-tasks'
+import type { Task, TaskStatus } from '@focus-guide/shared'
+
+export default function ToDoPage() {
+  const { data: tasks, isLoading, error } = useTodayTasks()
+  const updateTask = useUpdateTask()
+  const queryClient = useQueryClient()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedColumn, setSelectedColumn] = useState<TaskStatus>('todo')
+  const [activeTask, setActiveTask] = useState<Task | null>(null)
+  const [sidePanelExpanded, setSidePanelExpanded] = useState(true)
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    })
+  )
+
+  const handleAddTask = (columnId: ColumnStatus) => {
+    setSelectedColumn(columnId)
+    setModalOpen(true)
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const task = event.active.data.current?.task
+    if (task) {
+      setActiveTask(task)
+    } else {
+      const taskId = (event.active.id as string).replace('panel-', '')
+      const todayTask = tasks?.find((t) => t.id === taskId)
+      setActiveTask(todayTask || null)
+    }
+  }
+
+  const handleDragOver = (event: DragOverEvent) => {
+    const { over, active } = event
+    if (!over) return
+
+    const task = active.data.current?.task as Task
+    const isFromPanel = task?.projectId && !task.todayStatus
+
+    if (isFromPanel) {
+      const allowedColumns: TaskStatus[] = ['backlog', 'todo']
+      const targetColumn = over.id as TaskStatus
+      if (!allowedColumns.includes(targetColumn)) {
+        return
+      }
+    }
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (!over) {
+      setActiveTask(null)
+      return
+    }
+
+    const activeId = active.id as string
+    const isFromPanel = activeId.startsWith('panel-')
+
+    let taskId = activeId
+    if (isFromPanel) {
+      taskId = activeId.replace('panel-', '')
+    }
+
+    const newStatus = over.id as TaskStatus
+
+    if (isFromPanel) {
+      if (activeTask) {
+        queryClient.setQueryData<Task[]>(['today', 'tasks'], (old) => {
+          const exists = old?.some((t) => t.id === taskId)
+          if (!exists) {
+            const newTask: Task = {
+              ...activeTask,
+              todayStatus: newStatus,
+              updatedAt: new Date().toISOString(),
+            }
+            return [newTask, ...(old || [])]
+          }
+          return old
+        })
+      }
+
+      updateTask.mutate(
+        {
+          id: taskId,
+          data: { todayStatus: newStatus },
+        },
+        {
+          onSettled: () => {
+            setActiveTask(null)
+          },
+        }
+      )
+    } else {
+      const task = tasks?.find((t) => t.id === taskId)
+
+      if (!task || task.todayStatus === newStatus) {
+        setActiveTask(null)
+        return
+      }
+
+      updateTask.mutate(
+        {
+          id: taskId,
+          data: { todayStatus: newStatus },
+        },
+        {
+          onSettled: () => {
+            setActiveTask(null)
+          },
+        }
+      )
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="animate-pulse text-gray-500">Chargement...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500">Erreur lors du chargement des tâches</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 text-sm text-chartreuse hover:underline"
+          >
+            Réessayer
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="flex h-full flex-row overflow-hidden">
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="border-b border-gray-200 p-6">
+            <h1 className="text-3xl font-bold font-display text-dark">À faire</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Gérez vos tâches à faire
+            </p>
+          </div>
+
+          <div className="flex-1 overflow-auto p-6">
+            <KanbanBoard
+              tasks={tasks?.filter((t) => t.id !== activeTask?.id) || []}
+              onAddTask={handleAddTask}
+            />
+          </div>
+        </div>
+
+        <ResponsiveSidePanel
+          isExpanded={sidePanelExpanded}
+          onToggleExpand={setSidePanelExpanded}
+          activeTask={activeTask}
+        >
+        </ResponsiveSidePanel>
+
+        <DragOverlay>
+          {activeTask && <TaskCard task={activeTask} isDragging />}
+        </DragOverlay>
+      </div>
+
+      <CreateTaskModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        columnStatus={selectedColumn}
+      />
+    </DndContext>
+  )
+}
