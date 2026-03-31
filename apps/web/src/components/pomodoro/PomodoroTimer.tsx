@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { usePomodoroStore } from '@/stores/pomodoroStore'
 import { usePomodoroKeyboard } from '@/hooks/usePomodoroKeyboard'
 import { useLoadPomodoroSettings } from '@/hooks/useLoadPomodoroSettings'
+import { usePomodoroInterval } from '@/hooks/usePomodoroInterval'
 import { CircularTimer } from './CircularTimer'
 import { TimerControls } from './TimerControls'
 import { PomodoroSettingsModal } from './PomodoroSettingsModal'
@@ -27,6 +28,9 @@ export function PomodoroTimer() {
   // AC 8: Keyboard shortcuts
   usePomodoroKeyboard()
 
+  // AC 3: Handle pomodoro countdown interval
+  usePomodoroInterval()
+
   // AC 10: Keyboard shortcut ","
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,17 +43,6 @@ export function PomodoroTimer() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
-
-  // AC 3: setInterval for countdown
-  useEffect(() => {
-    if (!isRunning) return
-
-    const interval = setInterval(() => {
-      tick() // AC 3: Decrement every second
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [isRunning, tick])
 
   // AC 7: MM:SS formatting
   const formatTime = (seconds: number): string => {
