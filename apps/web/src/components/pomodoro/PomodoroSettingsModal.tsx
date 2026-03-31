@@ -24,9 +24,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { usePomodoroStore } from '@/stores/pomodoroStore'
 import { useUpdatePomodoroSettings } from '@/hooks/useUpdatePomodoroSettings'
+import { cn } from '@/lib/utils'
 
 // AC 9: Validation schema
 const settingsSchema = z.object({
@@ -183,18 +183,31 @@ export function PomodoroSettingsModal({
 
               {/* AC 2: Auto-switch toggle */}
               <div className="flex items-center justify-between">
-                <Label htmlFor="autoSwitch" className="cursor-pointer">
+                <Label htmlFor="autoSwitch" className="text-[#262626] font-medium">
                   Passer automatiquement au suivant
                 </Label>
                 <Controller
                   name="autoSwitch"
                   control={control}
                   render={({ field }) => (
-                    <Switch
+                    <button
+                      type="button"
+                      onClick={() => field.onChange(!field.value)}
+                      className={cn(
+                        'relative inline-flex h-6 w-11 items-center rounded-full flex-shrink-0',
+                        field.value ? 'bg-dark' : 'bg-gray-300'
+                      )}
+                      role="switch"
+                      aria-checked={field.value}
                       id="autoSwitch"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    >
+                      <span
+                        className={cn(
+                          'inline-block h-4 w-4 rounded-full bg-white transition-transform',
+                          field.value ? 'translate-x-5' : 'translate-x-1'
+                        )}
+                      />
+                    </button>
                   )}
                 />
               </div>
