@@ -106,11 +106,11 @@ export default function LoginPage() {
             </p>
 
             {/* Forgot Password Link */}
-            <p className="text-center text-sm">
+            {/* <p className="text-center text-sm">
               <Link href="/forgot-password" className="text-gray-600 hover:underline">
                 Mot de passe oublié?
               </Link>
-            </p>
+            </p> */}
           </form>
         </CardContent>
       </Card>
