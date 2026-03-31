@@ -41,7 +41,6 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
 
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
-      console.error('Save settings error:', err)
       const errorMessage = err instanceof Error ? err.message : 'Failed to save settings'
       setError(errorMessage)
     } finally {

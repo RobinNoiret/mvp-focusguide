@@ -30,18 +30,13 @@ export default function LoginPage() {
     setApiError(null)
 
     try {
-      console.log('[Login] Attempting login...')
       await authService.login(data)
-      console.log('[Login] Login successful, redirecting to /today')
-
       // Redirect to dashboard
       router.replace('/today')
     } catch (error: unknown) {
-      console.error('[Login] Error:', error)
       const axiosError = error as { response?: { data?: { error?: string } } }
       const errorMessage = axiosError.response?.data?.error ||
         'La connexion a échoué. Vérifiez vos identifiants.'
-      console.error('[Login] Error message:', errorMessage)
       setApiError(errorMessage)
     } finally {
       setIsLoading(false)

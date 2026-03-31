@@ -18,7 +18,6 @@ export default function SettingsPage() {
       setUser(data as User)
     } catch (err) {
       setError('Failed to load settings')
-      console.error(err)
     } finally {
       setLoading(false)
     }

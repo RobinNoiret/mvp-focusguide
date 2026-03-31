@@ -30,7 +30,6 @@ export function AuthInitializer({ children }: { children: React.ReactNode }) {
           }
         }
       } catch {
-        console.log('[AUTH] Token validation failed, clearing auth state...')
         useAuthStore.getState().logout()
       }
     }

@@ -15,10 +15,8 @@ export function NotificationBell({ count = 0, onClick }: NotificationBellProps) 
   const handleClick = () => {
     if (onClick) {
       onClick()
-    } else {
-      // Placeholder for MVP
-      console.log('Notification bell clicked')
     }
+    // TODO: Implement notification functionality
   }
 
   return (

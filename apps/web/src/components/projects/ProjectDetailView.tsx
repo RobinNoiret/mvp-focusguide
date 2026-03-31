@@ -188,7 +188,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
         {/* Gantt view (placeholder for future story) */}
         {viewMode === 'gantt' && (
           <div className="flex h-96 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white">
-            <p className="text-gray-500">Vue Gantt à venir (Epic 2+)</p>
+            <p className="text-gray-500">A venir</p>
           </div>
         )}
       </div>
