@@ -32,10 +32,8 @@ export interface ErrorHandlerContext {
  * Provides consistent toast notifications and error logging
  */
 export function handleError(error: unknown, context: ErrorHandlerContext) {
-  // Log error in development
-  if (context.logError !== false && process.env.NODE_ENV === 'development') {
-    console.error('[Error Handler]', context.message, error)
-  }
+  // Note: Error logging disabled for security - error objects may contain sensitive data
+  // Use specific error handling in each feature instead of general error logging
 
   // Build toast action if retryable
   const action = context.isRetryable && context.onRetry

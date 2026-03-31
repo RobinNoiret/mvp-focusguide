@@ -21,21 +21,16 @@ class AuthService {
    * Uses apiClient for consistent error handling and interceptors
    */
   async login(data: LoginRequest): Promise<AuthResponse> {
-    console.log('[AuthService] Login request started')
     try {
       const response = await authApiClient.post<AuthResponse>('/auth/login', data)
-      console.log('[AuthService] Login response received:', response.data)
       const authData = response.data
 
       // Store auth data in Zustand
       const { user, accessToken, refreshToken } = authData
-      console.log('[AuthService] Storing auth data in Zustand')
       useAuthStore.getState().setAuth(user, accessToken, refreshToken)
-      console.log('[AuthService] Auth data stored successfully')
 
       return authData
     } catch (error) {
-      console.error('[AuthService] Login failed:', error)
       throw error
     }
   }
@@ -49,8 +44,7 @@ class AuthService {
       // Call logout endpoint to invalidate tokens server-side
       await authApiClient.post('/auth/logout')
     } catch (error) {
-      // Log but don't throw - logout should always clear local state
-      console.warn('[AuthService] Logout API call failed:', error)
+      // Don't throw - logout should always clear local state even if API call fails
     } finally {
       // Clear auth state even if API call fails
       useAuthStore.getState().logout()

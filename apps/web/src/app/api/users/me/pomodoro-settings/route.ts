@@ -30,7 +30,6 @@ export async function PATCH(request: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data, { status: response.status })
   } catch (error) {
-    console.error('Update pomodoro settings error:', error)
     return NextResponse.json(
       { error: 'Failed to update pomodoro settings' },
       { status: 500 }

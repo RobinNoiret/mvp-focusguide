@@ -125,6 +125,9 @@ export function useUpdateTask() {
           }
         })
       }
+
+      // Invalidate the global projects list to refresh task counts and completion percentage
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
     },
 
     customSuccessMessage: 'Tâche modifiée',
@@ -148,22 +151,33 @@ export function useUpdateTask() {
 /**
  * Delete a task from Today
  */
-export const useDeleteTask = createMutationHook<string, void>({
-  mutationFn: (id) => taskService.deleteTask(id),
-  queryKey: ['today', 'tasks'],
-  mutationType: 'delete',
-  entityName: 'tâche',
+export function useDeleteTask() {
+  const queryClient = useQueryClient()
 
-  onOptimisticUpdate: (queryClient, id) => {
-    const previousTasks = queryClient.getQueryData<Task[]>(['today', 'tasks'])
-    queryClient.setQueryData<Task[]>(['today', 'tasks'], (old) =>
-      old?.filter((task) => task.id !== id)
-    )
-    return { previousData: previousTasks }
-  },
+  return createMutationHook<string, void>({
+    mutationFn: (id) => taskService.deleteTask(id),
+    queryKey: ['today', 'tasks'],
+    mutationType: 'delete',
+    entityName: 'tâche',
 
-  customSuccessMessage: 'Tâche supprimée',
-})
+    onOptimisticUpdate: (queryClient, id) => {
+      const previousTasks = queryClient.getQueryData<Task[]>(['today', 'tasks'])
+      queryClient.setQueryData<Task[]>(['today', 'tasks'], (old) =>
+        old?.filter((task) => task.id !== id)
+      )
+      return { previousData: previousTasks }
+    },
+
+    customSuccessMessage: 'Tâche supprimée',
+  })(
+    {
+      onSuccess: () => {
+        // Invalidate the global projects list in case the deleted task was linked to a project
+        queryClient.invalidateQueries({ queryKey: ['projects'] })
+      },
+    }
+  )
+}
 
 /**
  * Remove a task from Today (unlink from Today but keep in project)

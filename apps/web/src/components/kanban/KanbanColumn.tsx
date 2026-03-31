@@ -42,7 +42,6 @@ export function KanbanColumn({
 
   return (
     <div
-      ref={setNodeRef}
       className={cn(
         'flex min-w-[280px] flex-col rounded-lg border bg-white shadow-sm transition-all duration-150 h-full',
         // Valid drop for Today tasks
@@ -75,6 +74,7 @@ export function KanbanColumn({
 
       {/* Column body */}
       <div
+        ref={setNodeRef}
         className={cn(
           'flex-1 overflow-y-auto p-3',
           'min-h-[400px]'
