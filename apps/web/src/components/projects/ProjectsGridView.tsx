@@ -27,6 +27,7 @@ export function ProjectsGridView() {
         <Button
           className="bg-chartreuse text-dark hover:bg-chartreuse/90"
           onClick={() => setIsCreateModalOpen(true)}
+          data-tour="btn-create-project"
         >
           <Plus className="mr-2 h-5 w-5" />
           Nouveau projet
@@ -77,13 +78,14 @@ export function ProjectsGridView() {
 
       {/* Projects grid */}
       {!isLoading && !isError && projects && projects.length > 0 && (
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3" data-tour="projects-grid">
           {projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onEdit={() => setEditingProject(project)}
-            />
+            <div key={project.id} data-tour={project === projects[0] ? 'project-card' : undefined}>
+              <ProjectCard
+                project={project}
+                onEdit={() => setEditingProject(project)}
+              />
+            </div>
           ))}
         </div>
         )}
