@@ -1,18 +1,22 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { useAuthStore } from '@/stores/auth-store'
 import { userService } from '@/services/user-service'
 import { toast } from 'sonner'
 import { OnboardingWizard } from './OnboardingWizard'
 import { OnboardingTour } from './OnboardingTour'
 
-type OnboardingStage = 'wizard' | 'tour' | null
+type OnboardingStage = 'wizard' | 'tour-today' | 'tour-projects' | 'tour-pomodoro' | null
+type TourPage = 'today' | 'projects' | 'pomodoro'
 
 export function OnboardingController() {
   const user = useAuthStore((state) => state.user)
   const setOnboardingCompleted = useAuthStore((state) => state.setOnboardingCompleted)
+  const pathname = usePathname()
   const [stage, setStage] = useState<OnboardingStage>(null)
+  const [currentTourPage, setCurrentTourPage] = useState<TourPage>('today')
 
   // Initialize onboarding if user hasn't completed it
   useEffect(() => {
@@ -26,7 +30,13 @@ export function OnboardingController() {
   }
 
   const handleWizardStartTour = () => {
-    setStage('tour')
+    setCurrentTourPage('today')
+    setStage('tour-today')
+  }
+
+  const handleTourNext = (nextPage: TourPage) => {
+    setCurrentTourPage(nextPage)
+    setStage(`tour-${nextPage}` as OnboardingStage)
   }
 
   const handleTourComplete = async () => {
@@ -43,6 +53,10 @@ export function OnboardingController() {
     }
   }
 
+  const isTodayPage = pathname.startsWith('/today')
+  const isProjectsPage = pathname.startsWith('/projets')
+  const isPomodoroPage = pathname.startsWith('/pomodoro')
+
   return (
     <>
       <OnboardingWizard
@@ -50,7 +64,18 @@ export function OnboardingController() {
         onComplete={handleWizardComplete}
         onStartTour={handleWizardStartTour}
       />
-      <OnboardingTour isOpen={stage === 'tour'} onComplete={handleTourComplete} />
+      {stage?.startsWith('tour-') && (
+        <OnboardingTour
+          page={currentTourPage}
+          onNext={handleTourNext}
+          onComplete={handleTourComplete}
+          isPageLoaded={
+            (currentTourPage === 'today' && isTodayPage) ||
+            (currentTourPage === 'projects' && isProjectsPage) ||
+            (currentTourPage === 'pomodoro' && isPomodoroPage)
+          }
+        />
+      )}
     </>
   )
 }
