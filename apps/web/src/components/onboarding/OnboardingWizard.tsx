@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, Calendar, FolderOpen, Clock } from 'lucide-react'
@@ -44,6 +44,13 @@ export function OnboardingWizard({
   onStartTour,
 }: OnboardingWizardProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
+
+  // Reset to first slide when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentSlide(0)
+    }
+  }, [isOpen])
 
   const handleNext = () => {
     if (currentSlide < slides.length - 1) {
