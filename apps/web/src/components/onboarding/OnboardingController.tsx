@@ -7,8 +7,9 @@ import { userService } from '@/services/user-service'
 import { toast } from 'sonner'
 import { OnboardingWizard } from './OnboardingWizard'
 import { OnboardingTour } from './OnboardingTour'
+import { OnboardingFinal } from './OnboardingFinal'
 
-type OnboardingStage = 'wizard' | 'tour-today' | 'tour-projects' | 'tour-pomodoro' | null
+type OnboardingStage = 'wizard' | 'tour-today' | 'tour-projects' | 'tour-pomodoro' | 'final' | null
 type TourPage = 'today' | 'projects' | 'pomodoro'
 
 export function OnboardingController() {
@@ -40,13 +41,16 @@ export function OnboardingController() {
   }
 
   const handleTourComplete = async () => {
+    setStage('final')
+  }
+
+  const handleFinalComplete = async () => {
     try {
       // Mark onboarding as complete on the backend
       await userService.completeOnboarding(true)
       // Update the local state
       setOnboardingCompleted()
       setStage(null)
-      toast.success('Bienvenue! Vous avez complété la visite guidée.')
     } catch (error) {
       console.error('Failed to complete onboarding:', error)
       toast.error('Une erreur est survenue. Veuillez réessayer.')
@@ -76,6 +80,10 @@ export function OnboardingController() {
           }
         />
       )}
+      <OnboardingFinal
+        isOpen={stage === 'final'}
+        onComplete={handleFinalComplete}
+      />
     </>
   )
 }
