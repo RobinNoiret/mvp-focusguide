@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
+import './onboarding-tour.css'
 import { useRouter } from 'next/navigation'
 
 type TourPage = 'today' | 'projects' | 'pomodoro'
