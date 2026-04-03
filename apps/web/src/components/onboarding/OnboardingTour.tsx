@@ -162,37 +162,13 @@ export function OnboardingTour({
     // Wait a bit for page to fully render
     const timer = setTimeout(() => {
       const steps = tourSteps[page]
-      const finalStep = {
-        element: '#nav-today',
-        popover: {
-          title:
-            page === 'today'
-              ? 'Découvrez les Projets'
-              : page === 'projects'
-                ? 'Essayez Pomodoro'
-                : 'Vous êtes prêt!',
-          description:
-            page === 'today'
-              ? 'Vous avez découvert le tableau Aujourd\'hui. Voyons maintenant comment gérer vos projets à long terme.'
-              : page === 'projects'
-                ? 'Excellente compréhension des projets! Maintenant, utilisez Pomodoro pour rester concentré.'
-                : 'Vous maîtrisez maintenant toutes les fonctionnalités de FocusGuide. Commencez à gérer votre productivité!',
-          side: 'right',
-        },
-      }
 
       driverRef.current = driver({
         allowClose: false,
         showProgress: true,
-        steps: [...steps, finalStep],
+        steps: steps,
         onDestroyStarted: async () => {
-          if (page === 'today') {
-            onNext('projects')
-          } else if (page === 'projects') {
-            onNext('pomodoro')
-          } else {
-            await onComplete()
-          }
+          await onComplete()
         },
       })
 
