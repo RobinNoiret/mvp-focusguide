@@ -32,15 +32,24 @@ export function KanbanBoard({
   return (
     <div
       className="flex gap-6 overflow-x-auto snap-x snap-mandatory md:snap-none h-full"
-      style={{}}
+      data-tour="kanban-board"
     >
       {columns.map((column) => {
         const columnTasks = getTasksForColumn(column.id)
+        const tourId =
+          column.id === 'todo'
+            ? 'column-todo'
+            : column.id === 'in_progress'
+              ? 'column-in-progress'
+              : column.id === 'done'
+                ? 'column-done'
+                : undefined
         return (
           <div
             key={column.id}
             className="flex-shrink-0 snap-center md:flex-1 h-full"
             style={{ minWidth: '280px' }}
+            data-tour={tourId}
           >
             <KanbanColumn
               id={column.id}
