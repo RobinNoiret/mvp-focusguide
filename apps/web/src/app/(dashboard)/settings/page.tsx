@@ -5,6 +5,7 @@ import { userService } from '@/services/user-service'
 import type { User } from '@/services/settings-service'
 import { AccountSection } from '@/components/settings/AccountSection'
 import { PomodoroSettingsSection } from '@/components/settings/PomodoroSettingsSection'
+import { OnboardingSection } from '@/components/settings/OnboardingSection'
 
 export default function SettingsPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -56,6 +57,7 @@ export default function SettingsPage() {
           {user && (
             <>
               <AccountSection user={user} />
+              <OnboardingSection onRestart={fetchUser} />
               <PomodoroSettingsSection initialSettings={user.pomodoro_settings} onUpdate={fetchUser} />
             </>
           )}
