@@ -13,27 +13,27 @@ interface OnboardingWizardProps {
 
 const slides = [
   {
-    title: 'Bienvenue sur FocusGuide! 👋',
+    title: 'Bienvenue sur FocusGuide',
     description:
-      'Une application pour vous aider à gérer vos tâches, projets et sessions Pomodoro avec efficacité.',
+      'Gérez efficacement vos tâches, projets et sessions de concentration en un seul endroit. Une application conçue pour augmenter votre productivité.',
     icon: CheckCircle2,
   },
   {
-    title: "Aujourd'hui - Votre tableau Kanban",
+    title: 'Aujourd\'hui - Tableau Kanban',
     description:
-      'Organisez vos tâches du jour avec le système Kanban. Déplacez vos tâches entre À faire, En cours et Terminé.',
+      'Visualisez toutes vos tâches du jour organisées en trois colonnes : À faire, En cours, et Terminé. Glissez-déposez vos tâches pour les mettre à jour et suivre votre progression en temps réel.',
     icon: Calendar,
   },
   {
     title: 'Projets - Structurez votre travail',
     description:
-      'Créez des projets pour regrouper vos tâches et mieux organiser votre workflow long terme.',
+      'Créez et gérez vos projets long terme avec leurs propres tableaux Kanban. Vous pouvez créer autant de projets que nécessaire et chaque projet peut contenir plusieurs tâches liées et organisées.',
     icon: FolderOpen,
   },
   {
-    title: 'Pomodoro - Optimisez votre focus',
+    title: 'Pomodoro - Maximisez votre focus',
     description:
-      'Utilisez la technique Pomodoro pour augmenter votre concentration avec des cycles de travail et de pause.',
+      'Utilisez la technique Pomodoro avec un minuteur intégré. Configurez vos cycles de travail et de pause, et laissez-vous guider pour des sessions de concentration optimales.',
     icon: Clock,
   },
 ]
@@ -66,51 +66,75 @@ export function OnboardingWizard({
     }
   }
 
-  const slide = slides[currentSlide]
-  const Icon = slide.icon
+  const slide = slides[currentSlide] || slides[0]
+  const Icon = slide?.icon
+  const progress = ((currentSlide + 1) / slides.length) * 100
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onComplete()}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={isOpen} onOpenChange={() => {}}>
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-center">{slide.title}</DialogTitle>
+          <DialogTitle className="text-center text-2xl text-primary">
+            {slide?.title}
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-6 py-8">
-          <Icon className="h-16 w-16 text-primary" />
-          <p className="text-center text-sm text-muted-foreground">{slide.description}</p>
+        <div className="flex flex-col gap-6 py-8 items-center">
+          {Icon && <Icon className="h-14 w-14 text-primary" style={{ opacity: 0.75 }} />}
 
-          {/* Progress indicator */}
-          <div className="flex gap-2">
-            {slides.map((_, index) => (
+          <p className="text-center text-base text-primary leading-relaxed">
+            {slide?.description}
+          </p>
+
+          {/* Progress bar */}
+          <div className="w-full">
+            <div className="h-1 w-full bg-surface-secondary rounded-full overflow-hidden">
               <div
-                key={index}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  index === currentSlide ? 'bg-primary' : 'bg-muted'
-                }`}
+                className="h-full transition-all duration-300"
+                style={{ width: `${progress}%`, backgroundColor: '#D9FC00' }}
               />
-            ))}
+            </div>
+            <p className="text-xs text-primary mt-2 text-center">
+              Étape {currentSlide + 1} de {slides.length}
+            </p>
           </div>
         </div>
 
         {/* Footer buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-3 pt-4">
           <Button
             variant="ghost"
             onClick={onComplete}
-            className="flex-1"
+            className="flex-1 text-primary"
           >
             Ignorer
           </Button>
 
           {currentSlide > 0 && (
-            <Button variant="outline" onClick={handlePrevious} className="flex-1">
-              ← Précédent
+            <Button
+              variant="outline"
+              onClick={handlePrevious}
+              className="flex-1"
+            >
+              Précédent
             </Button>
           )}
 
-          <Button onClick={handleNext} className="flex-1">
-            {currentSlide === slides.length - 1 ? 'Démarrer la visite →' : 'Suivant →'}
+          <Button
+            onClick={handleNext}
+            className="flex-1 font-semibold transition-colors"
+            style={{
+              backgroundColor: '#D9FC00',
+              color: '#262626',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#C9F600'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#D9FC00'
+            }}
+          >
+            {currentSlide === slides.length - 1 ? 'Démarrer' : 'Suivant'}
           </Button>
         </div>
       </DialogContent>
