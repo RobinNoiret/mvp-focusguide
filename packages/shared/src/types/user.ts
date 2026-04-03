@@ -3,6 +3,7 @@ export interface User {
   email: string
   name: string
   emailVerified: boolean
+  flOnboarding: boolean
   pomodoroSettings: PomodoroSettings
   createdAt: string
   updatedAt: string

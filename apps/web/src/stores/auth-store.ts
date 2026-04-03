@@ -14,6 +14,7 @@ interface AuthState {
   // Actions
   setAuth: (user: User, accessToken: string, refreshToken: string) => void
   setAccessToken: (accessToken: string) => void
+  setOnboardingCompleted: () => void
   logout: () => void
 }
 
@@ -31,6 +32,11 @@ export const useAuthStore = create<AuthState>()(
 
       setAccessToken: (accessToken) =>
         set({ accessToken }),
+
+      setOnboardingCompleted: () =>
+        set((state) => ({
+          user: state.user ? { ...state.user, flOnboarding: true } : null,
+        })),
 
       logout: () =>
         set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false }),
