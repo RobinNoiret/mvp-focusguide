@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { X } from 'lucide-react'
 import { mergeRefs } from '@/lib/merge-refs'
+import { useTranslation } from '@/hooks/use-translation'
 import type { Task, UpdateTaskInput } from '@focus-guide/shared'
 
 interface EditProjectTaskModalProps {
@@ -26,6 +27,7 @@ export function EditProjectTaskModal({
   task,
   onSubmit,
 }: EditProjectTaskModalProps) {
+  const { t } = useTranslation()
   const titleRef = useRef<HTMLInputElement>(null)
   const [mounted, setMounted] = useState(false)
 
@@ -107,7 +109,7 @@ export function EditProjectTaskModal({
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 id="edit-task-modal-title" className="text-xl font-semibold text-dark">
-            Modifier la tâche
+            {t.modals.projectTask.edit.title}
           </h2>
           <button
             type="button"
@@ -126,14 +128,14 @@ export function EditProjectTaskModal({
               htmlFor="edit-task-title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Titre <span className="text-red-500">*</span>
+              {t.modals.projectTask.edit.titleField} <span className="text-red-500">*</span>
             </label>
             <input
               {...register('title', {
-                required: 'Le titre est requis',
+                required: t.common.validation.required,
                 maxLength: {
                   value: 200,
-                  message: 'Maximum 200 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               ref={mergeRefs(
@@ -160,13 +162,13 @@ export function EditProjectTaskModal({
               htmlFor="edit-task-notes"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Notes <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.notes} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <textarea
               {...register('notes', {
                 maxLength: {
                   value: 1000,
-                  message: 'Maximum 1000 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               id="edit-task-notes"
@@ -189,7 +191,7 @@ export function EditProjectTaskModal({
               htmlFor="edit-task-deadline"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Échéance <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.deadline} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <input
               {...register('deadline')}
@@ -208,14 +210,14 @@ export function EditProjectTaskModal({
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !title.trim()}
               className="px-4 py-2 text-sm font-medium text-dark bg-chartreuse rounded-md hover:bg-chartreuse/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+              {isSubmitting ? t.common.saving : t.modals.projectTask.edit.submit}
             </button>
           </div>
         </form>

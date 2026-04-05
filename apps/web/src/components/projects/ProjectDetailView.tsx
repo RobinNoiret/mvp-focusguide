@@ -10,6 +10,7 @@ import { ProjectDetailSkeleton } from './ProjectDetailSkeleton'
 import { DeleteProjectConfirmationDialog } from './DeleteProjectConfirmationDialog'
 import { Button } from '@/components/ui/button'
 import { useProject, useDeleteProject } from '@/hooks/use-projects'
+import { useTranslation } from '@/hooks/use-translation'
 import { cn } from '@/lib/utils'
 
 interface ProjectDetailViewProps {
@@ -18,6 +19,7 @@ interface ProjectDetailViewProps {
 
 export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
   const router = useRouter()
+  const { t } = useTranslation()
   const [viewMode, setViewMode] = useState<'kanban' | 'gantt'>('kanban')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -52,7 +54,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
           ) : (
             <>
               <p className="mb-4 text-lg text-gray-600">
-                Erreur lors du chargement du projet
+                {t.errors.loadFailed}
               </p>
             </>
           )}
@@ -67,7 +69,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
                 className="bg-chartreuse text-dark hover:bg-chartreuse/90"
               >
                 <RefreshCw className={cn('mr-2 h-4 w-4', isFetching && 'animate-spin')} />
-                Réessayer
+                {t.common.retry}
               </Button>
             )}
           </div>
@@ -136,7 +138,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
                       className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4" />
-                      Supprimer le projet
+                      {t.projects.settings.deleteButton}
                     </button>
                   </div>
                 </>
@@ -188,7 +190,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
         {/* Gantt view (placeholder for future story) */}
         {viewMode === 'gantt' && (
           <div className="flex h-96 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white">
-            <p className="text-gray-500">A venir</p>
+            <p className="text-gray-500">À venir</p>
           </div>
         )}
       </div>

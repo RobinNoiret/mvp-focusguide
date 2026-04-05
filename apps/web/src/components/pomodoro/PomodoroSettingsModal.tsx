@@ -26,29 +26,31 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { usePomodoroStore } from '@/stores/pomodoroStore'
 import { useUpdatePomodoroSettings } from '@/hooks/useUpdatePomodoroSettings'
+import { useTranslation } from '@/hooks/use-translation'
 import { cn } from '@/lib/utils'
 
-// AC 9: Validation schema
-const settingsSchema = z.object({
-  focusDuration: z
-    .number()
-    .int()
-    .min(1, 'Minimum 1 minute')
-    .max(60, 'Maximum 60 minutes'),
-  breakDuration: z
-    .number()
-    .int()
-    .min(1, 'Minimum 1 minute')
-    .max(30, 'Maximum 30 minutes'),
-  repetitions: z
-    .number()
-    .int()
-    .min(1, 'Minimum 1 cycle')
-    .max(10, 'Maximum 10 cycles'),
-  autoSwitch: z.boolean(),
-})
+function getSettingsSchema(t: any) {
+  return z.object({
+    focusDuration: z
+      .number()
+      .int()
+      .min(1, t.settings.pomodoro.minimumMessage)
+      .max(60, 'Maximum 60 minutes'),
+    breakDuration: z
+      .number()
+      .int()
+      .min(1, t.settings.pomodoro.minimumMessage)
+      .max(30, 'Maximum 30 minutes'),
+    repetitions: z
+      .number()
+      .int()
+      .min(1, 'Minimum 1 cycle')
+      .max(10, 'Maximum 10 cycles'),
+    autoSwitch: z.boolean(),
+  })
+}
 
-type SettingsFormData = z.infer<typeof settingsSchema>
+type SettingsFormData = z.infer<ReturnType<typeof getSettingsSchema>>
 
 interface PomodoroSettingsModalProps {
   isOpen: boolean
@@ -61,8 +63,11 @@ export function PomodoroSettingsModal({
 }: PomodoroSettingsModalProps) {
   const { settings, isRunning, updateSettings, stopTimer } = usePomodoroStore()
   const updateSettingsMutation = useUpdatePomodoroSettings()
+  const { t } = useTranslation()
   const [showWarning, setShowWarning] = useState(false)
   const [pendingSettings, setPendingSettings] = useState<SettingsFormData | null>(null)
+
+  const settingsSchema = getSettingsSchema(t)
 
   const {
     register,
@@ -121,7 +126,7 @@ export function PomodoroSettingsModal({
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-[#262626]">
-              Paramètres Pomodoro
+              {t.settings.pomodoro.title}
             </DialogTitle>
           </DialogHeader>
 
@@ -130,7 +135,7 @@ export function PomodoroSettingsModal({
               {/* AC 2: Focus duration (1-60 min) */}
               <div className="space-y-2">
                 <Label htmlFor="focusDuration">
-                  Durée de focus (minutes)
+                  {t.settings.pomodoro.focusDuration}
                 </Label>
                 <Input
                   id="focusDuration"
@@ -148,7 +153,7 @@ export function PomodoroSettingsModal({
               {/* AC 2: Break duration (1-30 min) */}
               <div className="space-y-2">
                 <Label htmlFor="breakDuration">
-                  Durée de pause (minutes)
+                  {t.settings.pomodoro.breakDuration}
                 </Label>
                 <Input
                   id="breakDuration"
@@ -166,7 +171,7 @@ export function PomodoroSettingsModal({
               {/* AC 2: Repetitions (1-10) */}
               <div className="space-y-2">
                 <Label htmlFor="repetitions">
-                  Nombre de cycles
+                  {t.settings.pomodoro.repetitions}
                 </Label>
                 <Input
                   id="repetitions"
@@ -184,7 +189,7 @@ export function PomodoroSettingsModal({
               {/* AC 2: Auto-switch toggle */}
               <div className="flex items-center justify-between">
                 <Label htmlFor="autoSwitch" className="text-[#262626] font-medium">
-                  Passer automatiquement au suivant
+                  {t.settings.pomodoro.autoSwitch}
                 </Label>
                 <Controller
                   name="autoSwitch"
@@ -219,13 +224,13 @@ export function PomodoroSettingsModal({
                 variant="outline"
                 onClick={onClose}
               >
-                Annuler
+                {t.common.cancel}
               </Button>
               <Button
                 type="submit"
                 className="bg-[#D9FC00] text-[#262626] hover:bg-[#c4e600]"
               >
-                Enregistrer
+                {t.common.save}
               </Button>
             </DialogFooter>
           </form>
@@ -243,7 +248,7 @@ export function PomodoroSettingsModal({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancelChange} onOpenChange={setShowWarning}>
-              Annuler
+              {t.common.cancel}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmChange}

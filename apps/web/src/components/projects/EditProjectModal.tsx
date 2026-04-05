@@ -7,6 +7,7 @@ import { X } from 'lucide-react'
 import { TagInput } from '@/components/ui/TagInput'
 import { useUpdateProject } from '@/hooks/use-projects'
 import { mergeRefs } from '@/lib/merge-refs'
+import { useTranslation } from '@/hooks/use-translation'
 import type { Project } from '@focus-guide/shared'
 
 interface EditProjectModalProps {
@@ -22,6 +23,7 @@ interface FormData {
 }
 
 export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalProps) {
+  const { t } = useTranslation()
   const titleRef = useRef<HTMLInputElement>(null)
   const updateProject = useUpdateProject()
   const [tags, setTags] = useState<string[]>([])
@@ -110,7 +112,7 @@ export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalP
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white">
           <h2 id="modal-title" className="text-xl font-semibold text-dark">
-            Modifier le projet
+            {t.projects.editModal.title}
           </h2>
           <button
             type="button"
@@ -129,14 +131,14 @@ export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalP
               htmlFor="edit-title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Titre <span className="text-red-500">*</span>
+              {t.projects.editModal.name} <span className="text-red-500">*</span>
             </label>
             <input
               {...register('title', {
-                required: 'Le titre est requis',
+                required: t.common.validation.required,
                 maxLength: {
                   value: 200,
-                  message: 'Maximum 200 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               ref={mergeRefs(
@@ -145,7 +147,7 @@ export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalP
               )}
               type="text"
               id="edit-title"
-              placeholder="Nom du projet..."
+              placeholder={t.projects.createModal.namePlaceholder}
               maxLength={200}
               disabled={isSubmitting}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-chartreuse focus:border-transparent disabled:opacity-50"
@@ -164,17 +166,17 @@ export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalP
               htmlFor="edit-description"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Description <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.projects.editModal.description} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <textarea
               {...register('description', {
                 maxLength: {
                   value: 2000,
-                  message: 'Maximum 2000 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               id="edit-description"
-              placeholder="Décrivez votre projet..."
+              placeholder={t.projects.createModal.descriptionPlaceholder}
               rows={4}
               maxLength={2000}
               disabled={isSubmitting}
@@ -196,7 +198,7 @@ export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalP
               htmlFor="edit-deadline"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Échéance <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.deadline} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <input
               {...register('deadline')}
@@ -210,17 +212,17 @@ export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalP
           {/* Tags */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tags <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.tags} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <TagInput
               tags={tags}
               onTagsChange={setTags}
-              placeholder="Ajouter un tag (max 10)"
+              placeholder={t.common.addTagPlaceholder}
               maxTags={10}
               disabled={isSubmitting}
             />
             <p className="text-xs text-gray-500 mt-1">
-              Séparez les tags par virgule ou Entrée
+              {t.common.separateTags}
             </p>
           </div>
 
@@ -232,14 +234,14 @@ export function EditProjectModal({ isOpen, onClose, project }: EditProjectModalP
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !title.trim()}
               className="px-4 py-2 text-sm font-medium text-dark bg-chartreuse rounded-md hover:bg-chartreuse/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+              {isSubmitting ? t.common.saving : t.projects.editModal.submit}
             </button>
           </div>
         </form>

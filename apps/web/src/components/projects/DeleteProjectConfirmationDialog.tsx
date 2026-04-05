@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X, AlertTriangle } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 
 interface DeleteProjectConfirmationDialogProps {
   isOpen: boolean
@@ -19,6 +20,7 @@ export function DeleteProjectConfirmationDialog({
   projectTitle,
   taskCount,
 }: DeleteProjectConfirmationDialogProps) {
+  const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -75,7 +77,7 @@ export function DeleteProjectConfirmationDialog({
               <AlertTriangle className="h-5 w-5 text-red-600" />
             </div>
             <h2 id="delete-project-title" className="text-lg font-semibold text-dark">
-              Supprimer ce projet ?
+              {t.projects.deleteModal.title}
             </h2>
           </div>
           <button
@@ -92,21 +94,21 @@ export function DeleteProjectConfirmationDialog({
         {/* Content */}
         <div className="p-6">
           <p className="text-gray-700 mb-4">
-            Êtes-vous sûr de vouloir supprimer &quot;{projectTitle}&quot; ?
+            {t.projects.deleteModal.description} &quot;{projectTitle}&quot; ?
           </p>
 
           <div className="rounded-lg bg-red-50 border border-red-200 p-4">
             <p className="text-sm text-red-800 font-medium">
               {taskCount > 0 ? (
                 <>
-                  Toutes les <strong>{taskCount}</strong> tâche{taskCount > 1 && 's'} de ce projet seront également supprimée{taskCount > 1 && 's'}.
+                  {t.projects.deleteModal.warningTasksWillBeDeleted} <strong>{taskCount}</strong> {taskCount > 1 ? t.projects.deleteModal.taskPlural : t.projects.deleteModal.taskSingular}
                 </>
               ) : (
-                <>Ce projet ne contient aucune tâche.</>
+                <>{t.projects.deleteModal.noTasks}</>
               )}
             </p>
             <p className="text-sm text-red-700 mt-2">
-              Cette action est irréversible.
+              {t.projects.deleteModal.irreversible}
             </p>
           </div>
         </div>
@@ -119,7 +121,7 @@ export function DeleteProjectConfirmationDialog({
             disabled={isDeleting}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            Annuler
+            {t.common.cancel}
           </button>
           <button
             type="button"
@@ -127,7 +129,7 @@ export function DeleteProjectConfirmationDialog({
             disabled={isDeleting}
             className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
           >
-            {isDeleting ? 'Suppression...' : 'Supprimer le projet'}
+            {isDeleting ? t.common.deleting : t.projects.deleteModal.confirm}
           </button>
         </div>
       </div>
