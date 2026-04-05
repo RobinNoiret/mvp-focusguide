@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from '@/hooks/use-translation'
 
 interface CircularTimerProps {
   timeRemaining: number
@@ -23,6 +24,7 @@ export function CircularTimer({
   currentCycle,
   totalCycles,
 }: CircularTimerProps) {
+  const { t } = useTranslation()
   // AC 12: Responsive size based on screen
   const getResponsiveSize = () => {
     if (typeof window === 'undefined') return 450
@@ -97,7 +99,7 @@ export function CircularTimer({
           className="mt-0.5 text-gray-600"
           style={{ fontSize: `${modefontSize * 0.8}px` }}
         >
-          {mode === 'focus' ? 'Focus' : 'Pause'}
+          {mode === 'focus' ? t.pomodoro.focusTime : t.pomodoro.breakTime}
         </div>
 
         {/* Cycle count below mode */}

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/hooks/use-translation'
 
 interface OnboardingFinalProps {
   isOpen: boolean
@@ -10,6 +11,7 @@ interface OnboardingFinalProps {
 
 export function OnboardingFinal({ isOpen, onComplete }: OnboardingFinalProps) {
   const router = useRouter()
+  const { t } = useTranslation()
 
   const handleStartClick = async () => {
     await onComplete()
@@ -39,10 +41,10 @@ export function OnboardingFinal({ isOpen, onComplete }: OnboardingFinalProps) {
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-dark mb-3">Vous êtes prêt!</h1>
+        <h1 className="text-3xl font-bold text-dark mb-3">{t.onboarding.final.title}</h1>
 
         <p className="text-base text-dark mb-8 leading-relaxed" style={{ opacity: 0.8 }}>
-          Vous maîtrisez maintenant toutes les fonctionnalités de FocusGuide. Il est temps de commencer à gérer votre productivité et atteindre vos objectifs.
+          {t.onboarding.final.description}
         </p>
 
         <Button
@@ -59,7 +61,7 @@ export function OnboardingFinal({ isOpen, onComplete }: OnboardingFinalProps) {
             e.currentTarget.style.backgroundColor = '#D9FC00'
           }}
         >
-          Entrer dans FocusGuide
+          {t.onboarding.final.cta}
         </Button>
       </div>
     </div>

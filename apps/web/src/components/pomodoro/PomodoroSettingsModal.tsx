@@ -35,17 +35,17 @@ function getSettingsSchema(t: any) {
       .number()
       .int()
       .min(1, t.settings.pomodoro.minimumMessage)
-      .max(60, 'Maximum 60 minutes'),
+      .max(60, t.pomodoro.settingsChanged.focusMaximum),
     breakDuration: z
       .number()
       .int()
       .min(1, t.settings.pomodoro.minimumMessage)
-      .max(30, 'Maximum 30 minutes'),
+      .max(30, t.pomodoro.settingsChanged.breakMaximum),
     repetitions: z
       .number()
       .int()
-      .min(1, 'Minimum 1 cycle')
-      .max(10, 'Maximum 10 cycles'),
+      .min(1, t.pomodoro.settingsChanged.minCycle)
+      .max(10, t.pomodoro.settingsChanged.maxCycle),
     autoSwitch: z.boolean(),
   })
 }
@@ -241,9 +241,9 @@ export function PomodoroSettingsModal({
       <AlertDialog open={showWarning} onOpenChange={setShowWarning}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Modifier les paramètres ?</AlertDialogTitle>
+            <AlertDialogTitle>{t.pomodoro.settingsChanged.title}</AlertDialogTitle>
             <AlertDialogDescription>
-              Changer les paramètres réinitialisera le minuteur. Voulez-vous continuer ?
+              {t.pomodoro.settingsChanged.description}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -255,7 +255,7 @@ export function PomodoroSettingsModal({
               onOpenChange={setShowWarning}
               className="bg-[#D9FC00] text-[#262626] hover:bg-[#c4e600]"
             >
-              Continuer
+              {t.pomodoro.settingsChanged.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

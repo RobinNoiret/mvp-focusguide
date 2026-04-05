@@ -6,6 +6,7 @@ import {
 } from '@dnd-kit/sortable'
 import { useProject } from '@/hooks/use-project'
 import { useTodayStore } from '@/stores/today-store'
+import { useTranslation } from '@/hooks/use-translation'
 import { ProjectTaskCard } from './ProjectTaskCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Task, TaskStatus } from '@focus-guide/shared'
@@ -15,6 +16,7 @@ interface ProjectTaskListProps {
 }
 
 export function ProjectTaskList({ activeTask }: ProjectTaskListProps) {
+  const { t } = useTranslation()
   const { selectedProjectId } = useTodayStore()
 
   // AC 1, 10: Fetch project with tasks
@@ -25,7 +27,7 @@ export function ProjectTaskList({ activeTask }: ProjectTaskListProps) {
     return (
       <div className="flex h-full items-center justify-center">
         <p className="text-center text-sm text-gray-500">
-          Sélectionnez un projet...
+          {t.kanban.selectProject}
         </p>
       </div>
     )
@@ -47,7 +49,7 @@ export function ProjectTaskList({ activeTask }: ProjectTaskListProps) {
     return (
       <div className="flex h-full items-center justify-center">
         <p className="text-center text-sm text-gray-500">
-          Aucune tâche dans ce projet
+          {t.kanban.noTasksInProject}
         </p>
       </div>
     )
@@ -87,7 +89,7 @@ export function ProjectTaskList({ activeTask }: ProjectTaskListProps) {
     return (
       <div className="flex h-full items-center justify-center">
         <p className="text-center text-sm text-gray-500">
-          Aucune tâche à faire ou en cours
+          {t.kanban.noActionableTasks}
         </p>
       </div>
     )
@@ -100,7 +102,7 @@ export function ProjectTaskList({ activeTask }: ProjectTaskListProps) {
       {/* AC 6: Task count */}
       <div className="text-sm">
         <span className="font-medium text-dark">
-          {actionableTasksCount} tâche{actionableTasksCount > 1 ? 's' : ''} à faire
+          {actionableTasksCount} {t.locale === 'fr' ? 'tâche' : 'task'}{actionableTasksCount > 1 ? (t.locale === 'fr' ? 's' : 's') : ''} {t.locale === 'fr' ? 'à faire' : 'to do'}
         </span>
       </div>
 
@@ -109,12 +111,7 @@ export function ProjectTaskList({ activeTask }: ProjectTaskListProps) {
         const tasks = tasksByStatus[status]
         if (tasks.length === 0) return null
 
-        const statusLabels = {
-          backlog: 'Backlog',
-          todo: 'À faire',
-          in_progress: 'En cours',
-          done: 'Terminées',
-        }
+        const statusLabels = t.kanban.statusLabels
 
         return (
           <div key={status} className="space-y-1">

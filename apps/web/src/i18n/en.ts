@@ -10,6 +10,7 @@ export const en = {
     retry: 'Retry',
     saving: 'Saving...',
     deleting: 'Deleting...',
+    creating: 'Creating...',
     close: 'Close',
     today: 'Today',
     calendar: 'Calendar',
@@ -22,6 +23,18 @@ export const en = {
     notDone: 'Not done',
     markDone: 'Mark as done',
     markNotDone: 'Mark as not done',
+    optional: '(optional)',
+    deadline: 'Deadline',
+    tags: 'Tags',
+    addTagPlaceholder: 'Add a tag...',
+    separateTags: 'Separate tags with commas or spaces',
+    notes: 'Notes',
+    notesPlaceholder: 'Add your notes here...',
+    validation: {
+      required: 'This field is required',
+      maxLength: 'Character limit exceeded',
+    },
+    addedToColumn: 'Added to column',
   },
 
   errors: {
@@ -131,6 +144,23 @@ export const en = {
       todo: 'To do today',
       inProgress: 'In progress',
       done: 'Done',
+      emptyMessage: 'No tasks',
+      emptyDescription: 'Create a new task with the + button',
+    },
+  },
+
+  kanban: {
+    emptyMessage: 'No tasks',
+    emptyDescription: 'Create a new task with the + button',
+    selectProject: 'Select a project...',
+    noTasksInProject: 'No tasks in this project',
+    noActionableTasks: 'No tasks to do or in progress',
+    tasksLabel: 'task{count}',
+    statusLabels: {
+      backlog: 'Backlog',
+      todo: 'To do',
+      in_progress: 'In progress',
+      done: 'Done',
     },
   },
 
@@ -139,6 +169,9 @@ export const en = {
     subtitle: 'Structure your work',
     newProject: 'New Project',
     empty: 'No projects',
+    edit: 'Edit',
+    delete: 'Delete',
+    tasksCount: 'tasks',
     createModal: {
       title: 'Create Project',
       name: 'Project Name',
@@ -166,6 +199,15 @@ export const en = {
     settings: {
       title: 'Project Settings',
       deleteButton: 'Delete Project',
+      statistics: 'Statistics',
+      totalTasks: 'Total Tasks',
+      progress: 'Progress',
+      completed: 'Done',
+      inProgress: 'In Progress',
+    },
+    viewModes: {
+      kanban: 'Kanban',
+      gantt: 'Gantt',
     },
   },
 
@@ -218,9 +260,26 @@ export const en = {
     reset: 'Reset',
     focusTime: 'Focus time',
     breakTime: 'Break time',
+    settingsChanged: {
+      title: 'Change settings?',
+      description: 'Changing settings will reset the timer. Do you want to continue?',
+      confirm: 'Continue',
+      focusMaximum: 'Maximum 60 minutes',
+      breakMaximum: 'Maximum 30 minutes',
+      minCycle: 'Minimum 1 cycle',
+      maxCycle: 'Maximum 10 cycles',
+    },
   },
 
   onboarding: {
+    skip: 'Skip',
+    previous: 'Previous',
+    next: 'Next',
+    step: 'Step',
+    continue: 'Continue',
+    importTitle: 'Import from your projects',
+    projectsManagementTitle: 'Project management',
+    pomodoroControlsTitle: 'Timer controls',
     welcome: {
       title: 'Welcome to FocusGuide',
       description: 'Organize your tasks and maximize your productivity',
@@ -241,6 +300,7 @@ export const en = {
       gridDescription: 'Here you see all your projects. Click on a project to see its tasks organized in its own Kanban board.',
       createDescription: 'Click here to create a new project. Give it a name and description to organize your long-term work.',
       cardDescription: 'Each project has its own Kanban board. Create tasks, drag them between columns, and organize your work efficiently.',
+      transitionTitle: 'Let\'s move on to Projects',
     },
     pomodoro: {
       title: 'Pomodoro - Maximize your focus',
@@ -248,6 +308,7 @@ export const en = {
       timerDescription: 'This is your Pomodoro timer. It helps you manage cycles of focused work and regular breaks for optimal productivity.',
       controlsDescription: 'Use these buttons to start/pause the timer, reset it, or stop it. You can also use your keyboard shortcuts (Space, R, S).',
       settingsDescription: 'Click here to adjust work duration, break duration, number of cycles, and auto-switch. Customize according to your preference!',
+      transitionTitle: 'Let\'s try Pomodoro',
     },
     final: {
       title: 'Ready to get started?',

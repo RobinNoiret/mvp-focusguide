@@ -5,6 +5,7 @@ import { Plus, FolderOpen, RefreshCw } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { useTranslation } from '@/hooks/use-translation'
 import { ProjectCard } from './ProjectCard'
 import { ProjectCardSkeleton } from './ProjectCardSkeleton'
 import { CreateProjectModal } from './CreateProjectModal'
@@ -13,6 +14,7 @@ import { useProjects } from '@/hooks/use-projects'
 import type { Project } from '@focus-guide/shared'
 
 export function ProjectsGridView() {
+  const { t } = useTranslation()
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const { data: projects, isLoading, isError, refetch, isFetching } = useProjects()
@@ -21,7 +23,7 @@ export function ProjectsGridView() {
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
       <div className="border-b border-gray-200 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold font-display text-dark">Mes projets</h1>
+        <h1 className="text-3xl font-bold font-display text-dark">{t.projects.title}</h1>
 
         {/* Create project button */}
         <Button
@@ -30,7 +32,7 @@ export function ProjectsGridView() {
           data-tour="btn-create-project"
         >
           <Plus className="mr-2 h-5 w-5" />
-          Nouveau projet
+          {t.projects.newProject}
         </Button>
       </div>
 
@@ -49,7 +51,7 @@ export function ProjectsGridView() {
       {isError && !isLoading && (
         <div className="flex flex-col items-center justify-center py-16">
           <p className="mb-4 text-lg text-gray-600">
-            Impossible de charger vos projets
+            {t.today.loadFailed}
           </p>
           <Button
             onClick={() => refetch()}
@@ -57,7 +59,7 @@ export function ProjectsGridView() {
             disabled={isFetching}
           >
             <RefreshCw className={cn('mr-2 h-4 w-4', isFetching && 'animate-spin')} />
-            Réessayer
+            {t.common.retry}
           </Button>
         </div>
       )}
@@ -66,10 +68,10 @@ export function ProjectsGridView() {
       {!isLoading && !isError && projects?.length === 0 && (
         <EmptyState
           icon={<FolderOpen className="h-16 w-16" />}
-          title="Aucun projet"
-          description="Créez votre premier projet pour commencer"
+          title={t.projects.empty}
+          description={t.projects.createModal.submit}
           action={{
-            label: 'Créer un projet',
+            label: t.projects.createModal.submit,
             onClick: () => setIsCreateModalOpen(true),
           }}
           className="py-16"

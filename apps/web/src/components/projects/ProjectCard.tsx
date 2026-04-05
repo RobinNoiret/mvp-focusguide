@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MoreVertical, Calendar, Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/hooks/use-translation'
 import { useDeleteProject } from '@/hooks/use-projects'
 import { DeleteProjectConfirmationDialog } from './DeleteProjectConfirmationDialog'
 import type { ProjectWithStats } from '@/services/project-service'
@@ -14,6 +15,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onEdit }: ProjectCardProps) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -104,7 +106,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
                     className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
                     <Pencil className="h-4 w-4" />
-                    Modifier
+                    {t.projects.edit}
                   </button>
                   <button
                     onClick={(e) => {
@@ -115,7 +117,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
                     className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
                     <Trash2 className="h-4 w-4" />
-                    Supprimer
+                    {t.projects.delete}
                   </button>
                 </div>
               </>
@@ -130,7 +132,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
               {project.deadline && (
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <Calendar className="h-4 w-4" />
-                  <span>Échéance: {formatDate(project.deadline)}</span>
+                  <span>{t.common.deadline}: {formatDate(project.deadline)}</span>
                 </div>
               )}
             </div>
@@ -159,7 +161,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
             {/* Task count and Progress */}
             <div className="space-y-2">
               <p className="text-sm text-gray-600">
-                {project.taskCounts?.done || 0}/{project.taskCount || 0} tâches
+                {project.taskCounts?.done || 0}/{project.taskCount || 0} {t.projects.tasksCount}
               </p>
 
               {/* Progress bar */}

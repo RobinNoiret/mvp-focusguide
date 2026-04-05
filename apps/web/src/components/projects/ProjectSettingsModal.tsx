@@ -8,7 +8,6 @@ import { X } from 'lucide-react'
 import { TagInput } from '@/components/ui/TagInput'
 import { useUpdateProject } from '@/hooks/use-projects'
 import { mergeRefs } from '@/lib/merge-refs'
-import { useTranslation } from '@/hooks/use-translation'
 import type { ProjectWithStats } from '@/services/project-service'
 
 interface ProjectSettingsModalProps {

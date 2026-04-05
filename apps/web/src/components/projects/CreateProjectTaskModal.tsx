@@ -6,7 +6,6 @@ import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { X } from 'lucide-react'
 import { mergeRefs } from '@/lib/merge-refs'
-import { useTranslation } from '@/hooks/use-translation'
 import type { TaskStatus } from '@focus-guide/shared'
 
 interface CreateProjectTaskModalProps {
@@ -30,13 +29,6 @@ interface FormData {
   deadline: string
 }
 
-const columnTitles: Record<TaskStatus, string> = {
-  backlog: 'Backlog',
-  todo: 'À faire',
-  in_progress: 'En cours',
-  done: 'Terminé',
-}
-
 export function CreateProjectTaskModal({
   isOpen,
   onClose,
@@ -47,6 +39,16 @@ export function CreateProjectTaskModal({
   const { t } = useTranslation()
   const titleRef = useRef<HTMLInputElement>(null)
   const [mounted, setMounted] = useState(false)
+
+  const getColumnTitle = (status: TaskStatus): string => {
+    const titles: Record<TaskStatus, string> = {
+      backlog: t.today.kanban.backlog,
+      todo: t.today.kanban.todo,
+      in_progress: t.today.kanban.inProgress,
+      done: t.today.kanban.done,
+    }
+    return titles[status]
+  }
 
   const {
     register,
@@ -122,7 +124,7 @@ export function CreateProjectTaskModal({
               {t.modals.projectTask.create.title}
             </h2>
             <p className="text-sm text-gray-600">
-              {t.common.addedToColumn} <strong>{columnTitles[projectStatus]}</strong>
+              {t.common.addedToColumn} <strong>{getColumnTitle(projectStatus)}</strong>
             </p>
           </div>
           <button

@@ -321,7 +321,7 @@ export function Sidebar() {
                 className="flex items-center gap-2 px-4 py-2 text-dark hover:bg-gray-100"
               >
                 <Settings className="h-4 w-4" />
-                <span>Settings</span>
+                <span>{t.common.settings}</span>
               </Link>
               <hr className="my-1 border-border" />
               <button
@@ -332,7 +332,7 @@ export function Sidebar() {
                 className="flex w-full items-center gap-2 px-4 py-2 text-dark hover:bg-gray-100"
               >
                 <LogOut className="h-4 w-4" />
-                <span>Log out</span>
+                <span>{t.common.logout}</span>
               </button>
             </div>
           </>

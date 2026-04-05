@@ -8,7 +8,6 @@ import { X } from 'lucide-react'
 import { TagInput } from '@/components/ui/TagInput'
 import { useCreateProject } from '@/hooks/use-projects'
 import { mergeRefs } from '@/lib/merge-refs'
-import { useTranslation } from '@/hooks/use-translation'
 
 interface CreateProjectModalProps {
   isOpen: boolean

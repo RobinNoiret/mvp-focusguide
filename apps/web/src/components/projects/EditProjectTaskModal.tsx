@@ -6,7 +6,6 @@ import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { X } from 'lucide-react'
 import { mergeRefs } from '@/lib/merge-refs'
-import { useTranslation } from '@/hooks/use-translation'
 import type { Task, UpdateTaskInput } from '@focus-guide/shared'
 
 interface EditProjectTaskModalProps {

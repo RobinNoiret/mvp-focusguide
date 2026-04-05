@@ -4,7 +4,6 @@ import { useTranslation } from '@/hooks/use-translation'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X, AlertTriangle } from 'lucide-react'
-import { useTranslation } from '@/hooks/use-translation'
 
 interface DeleteProjectConfirmationDialogProps {
   isOpen: boolean
@@ -86,7 +85,7 @@ export function DeleteProjectConfirmationDialog({
             onClick={onClose}
             disabled={isDeleting}
             className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
-            aria-label="Fermer"
+            aria-label={t.common.close}
           >
             <X className="w-5 h-5" />
           </button>

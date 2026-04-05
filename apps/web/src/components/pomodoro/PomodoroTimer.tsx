@@ -7,12 +7,14 @@ import { usePomodoroStore } from '@/stores/pomodoroStore'
 import { usePomodoroKeyboard } from '@/hooks/usePomodoroKeyboard'
 import { useLoadPomodoroSettings } from '@/hooks/useLoadPomodoroSettings'
 import { usePomodoroInterval } from '@/hooks/usePomodoroInterval'
+import { useTranslation } from '@/hooks/use-translation'
 import { CircularTimer } from './CircularTimer'
 import { TimerControls } from './TimerControls'
 import { PomodoroSettingsModal } from './PomodoroSettingsModal'
 
 export function PomodoroTimer() {
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const { t } = useTranslation()
 
   // Use selectors to avoid re-renders on every store change
   const timeRemaining = usePomodoroStore((s) => s.timeRemaining)
@@ -64,7 +66,7 @@ export function PomodoroTimer() {
       <Button
         onClick={() => setSettingsOpen(true)}
         className="fixed top-4 right-4 z-50 bg-chartreuse text-dark hover:bg-chartreuse/90 rounded-lg h-10 w-10"
-        aria-label="Paramètres"
+        aria-label={t.common.settings}
         data-tour="pomodoro-settings"
       >
         <Settings className="h-5 w-5" />

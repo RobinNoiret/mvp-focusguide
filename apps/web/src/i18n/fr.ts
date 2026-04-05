@@ -10,6 +10,7 @@ export const fr = {
     retry: 'Réessayer',
     saving: 'Enregistrement...',
     deleting: 'Suppression...',
+    creating: 'Création...',
     close: 'Fermer',
     today: 'Aujourd\'hui',
     calendar: 'Calendrier',
@@ -22,6 +23,18 @@ export const fr = {
     notDone: 'Non fait',
     markDone: 'Marquer comme fait',
     markNotDone: 'Marquer comme non fait',
+    optional: '(optionnel)',
+    deadline: 'Date limite',
+    tags: 'Tags',
+    addTagPlaceholder: 'Ajouter un tag...',
+    separateTags: 'Séparez les tags par des virgules ou des espaces',
+    notes: 'Notes',
+    notesPlaceholder: 'Ajoutez vos notes ici...',
+    validation: {
+      required: 'Ce champ est requis',
+      maxLength: 'Limite de caractères dépassée',
+    },
+    addedToColumn: 'Ajoutée à la colonne',
   },
 
   errors: {
@@ -127,10 +140,27 @@ export const fr = {
     addTask: 'Ajouter une tâche',
     syncIndicator: 'Synchronisation...',
     kanban: {
-      backlog: 'Backlog',
+      backlog: 'À venir',
       todo: 'À faire aujourd\'hui',
       inProgress: 'En cours',
       done: 'Terminé',
+      emptyMessage: 'Aucune tâche',
+      emptyDescription: 'Créez une nouvelle tâche avec le bouton +',
+    },
+  },
+
+  kanban: {
+    emptyMessage: 'Aucune tâche',
+    emptyDescription: 'Créez une nouvelle tâche avec le bouton +',
+    selectProject: 'Sélectionnez un projet...',
+    noTasksInProject: 'Aucune tâche dans ce projet',
+    noActionableTasks: 'Aucune tâche à faire ou en cours',
+    tasksLabel: 'tâche{count}',
+    statusLabels: {
+      backlog: 'Backlog',
+      todo: 'À faire',
+      in_progress: 'En cours',
+      done: 'Terminées',
     },
   },
 
@@ -139,6 +169,9 @@ export const fr = {
     subtitle: 'Structurez votre travail',
     newProject: 'Nouveau projet',
     empty: 'Aucun projet',
+    edit: 'Modifier',
+    delete: 'Supprimer',
+    tasksCount: 'tâches',
     createModal: {
       title: 'Créer un projet',
       name: 'Nom du projet',
@@ -166,6 +199,15 @@ export const fr = {
     settings: {
       title: 'Paramètres du projet',
       deleteButton: 'Supprimer le projet',
+      statistics: 'Statistiques',
+      totalTasks: 'Total des tâches',
+      progress: 'Progression',
+      completed: 'Terminées',
+      inProgress: 'En cours',
+    },
+    viewModes: {
+      kanban: 'Kanban',
+      gantt: 'Gantt',
     },
   },
 
@@ -216,11 +258,28 @@ export const fr = {
     pause: 'Pause',
     resume: 'Reprendre',
     reset: 'Réinitialiser',
-    focusTime: 'Temps de focus',
-    breakTime: 'Temps de pause',
+    focusTime: 'Concentration',
+    breakTime: 'Pause',
+    settingsChanged: {
+      title: 'Modifier les paramètres ?',
+      description: 'Changer les paramètres réinitialisera le minuteur. Voulez-vous continuer ?',
+      confirm: 'Continuer',
+      focusMaximum: 'Maximum 60 minutes',
+      breakMaximum: 'Maximum 30 minutes',
+      minCycle: 'Minimum 1 cycle',
+      maxCycle: 'Maximum 10 cycles',
+    },
   },
 
   onboarding: {
+    skip: 'Ignorer',
+    previous: 'Précédent',
+    next: 'Suivant',
+    step: 'Étape',
+    continue: 'Continuer',
+    importTitle: 'Importer de vos projets',
+    projectsManagementTitle: 'Gestion des projets',
+    pomodoroControlsTitle: 'Contrôles du minuteur',
     welcome: {
       title: 'Bienvenue sur FocusGuide',
       description: 'Organisez vos tâches et maximisez votre productivité',
@@ -228,7 +287,7 @@ export const fr = {
     today: {
       title: 'Aujourd\'hui - Tableau Kanban',
       description: 'Gérez vos tâches quotidiennes en un coup d\'œil',
-      kanbanDescription: 'Voici votre tableau Kanban avec quatre colonnes : Backlog, À faire, En cours, et Done. Glissez-déposez vos tâches pour les mettre à jour.',
+      kanbanDescription: 'Voici votre tableau Kanban avec quatre colonnes : À venir, À faire, En cours, et Done. Glissez-déposez vos tâches pour les mettre à jour.',
       todoDescription: 'Cette colonne contient les tâches que vous avez planifiées pour aujourd\'hui. Vous pouvez ajouter de nouvelles tâches ou en importer de vos projets.',
       inProgressDescription: 'Déplacez vos tâches ici quand vous commencez à les travailler. Cela vous aide à suivre votre progression et votre focus.',
       doneDescription: 'Les tâches complétées apparaissent ici. Glissez vos tâches finies pour célébrer chaque accomplissement!',
@@ -241,6 +300,7 @@ export const fr = {
       gridDescription: 'Ici vous voyez tous vos projets. Cliquez sur un projet pour voir ses tâches organisées dans son propre tableau Kanban.',
       createDescription: 'Cliquez ici pour créer un nouveau projet. Donnez-lui un nom et une description pour organiser votre travail à long terme.',
       cardDescription: 'Chaque projet a son propre tableau Kanban. Créez des tâches, glissez-les entre colonnes, et organisez votre travail efficacement.',
+      transitionTitle: 'Passons aux Projets',
     },
     pomodoro: {
       title: 'Pomodoro - Maximisez votre focus',
@@ -248,6 +308,7 @@ export const fr = {
       timerDescription: 'Ceci est votre minuteur Pomodoro. Il vous aide à gérer des cycles de travail focalisé et des pauses régulières pour une productivité optimale.',
       controlsDescription: 'Utilisez ces boutons pour démarrer/pauser le minuteur, le réinitialiser, ou l\'arrêter. Vous pouvez aussi utiliser vos raccourcis clavier (Espace, R, S).',
       settingsDescription: 'Cliquez ici pour ajuster la durée de travail, de pause, le nombre de cycles et l\'auto-switch. Personnalisez selon votre préférence!',
+      transitionTitle: 'Essayons Pomodoro',
     },
     final: {
       title: 'Prêt à commencer?',

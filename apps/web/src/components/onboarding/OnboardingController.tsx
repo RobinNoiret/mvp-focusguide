@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useAuthStore } from '@/stores/auth-store'
 import { userService } from '@/services/user-service'
 import { toast } from 'sonner'
+import { useTranslation } from '@/hooks/use-translation'
 import { OnboardingWizard } from './OnboardingWizard'
 import { OnboardingTour } from './OnboardingTour'
 import { OnboardingFinal } from './OnboardingFinal'
@@ -17,6 +18,7 @@ export function OnboardingController() {
   const user = useAuthStore((state) => state.user)
   const setOnboardingCompleted = useAuthStore((state) => state.setOnboardingCompleted)
   const pathname = usePathname()
+  const { t } = useTranslation()
   const [stage, setStage] = useState<OnboardingStage>(null)
   const [currentTourPage, setCurrentTourPage] = useState<TourPage>('today')
 
@@ -94,12 +96,12 @@ export function OnboardingController() {
       )}
       <OnboardingTransition
         isOpen={stage === 'transition-to-projects'}
-        title="Passons aux Projets"
+        title={t.onboarding.projects.transitionTitle}
         onContinue={() => handleTransitionComplete('projects')}
       />
       <OnboardingTransition
         isOpen={stage === 'transition-to-pomodoro'}
-        title="Essayons Pomodoro"
+        title={t.onboarding.pomodoro.transitionTitle}
         onContinue={() => handleTransitionComplete('pomodoro')}
       />
       <OnboardingFinal
