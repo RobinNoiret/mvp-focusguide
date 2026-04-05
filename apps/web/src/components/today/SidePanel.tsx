@@ -37,6 +37,7 @@ export function SidePanel({
                 onClick={() => onToggleExpand(!isExpanded)}
                 className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100 transition-colors"
                 aria-label={isExpanded ? 'Replier le panneau' : 'Déplier le panneau'}
+                data-tour="side-panel-toggle"
               >
                 <ChevronLeft
                   className="h-5 w-5 text-gray-600 transition-transform duration-300"

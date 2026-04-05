@@ -20,6 +20,7 @@ Focus Guide helps users manage their productivity by providing three core capabi
 - **Zustand** - Global client state management
 - **TanStack Query** - Server state management and caching
 - **dnd-kit** - Drag-and-drop functionality
+- **driver.js** - Onboarding features
 
 ### Backend
 - **AdonisJS 6** - Node.js MVC framework
@@ -56,10 +57,29 @@ cp apps/api/.env.example apps/api/.env
 # Configure your environment variables in the .env files
 \`\`\`
 
-## Development
+## Database Setup
+
+After installation, you must run migrations to set up the database schema:
 
 \`\`\`bash
-# Start all services (frontend + backend)
+# Navigate to API directory
+cd apps/api
+
+# Run all pending migrations
+node ace migration:run
+
+# (Optional) Rollback migrations
+node ace migration:rollback
+\`\`\`
+
+**Important:** Migrations must be run after pulling new changes that include schema updates. Check the `apps/api/database/migrations/` folder for recent changes.
+
+## Development
+
+**First time setup:** Make sure to run [Database Setup](#database-setup) before starting the development server.
+
+\`\`\`bash
+# Start all services (frontend + backend + watch mode)
 pnpm dev
 
 # Start frontend only (Next.js on localhost:3000)
@@ -76,6 +96,12 @@ pnpm format
 
 # Run tests
 pnpm test
+
+### After pulling new changes
+If you pull changes that include database migrations:
+\`\`\`bash
+cd apps/api
+node ace migration:run
 \`\`\`
 
 ## Keyboard Shortcuts

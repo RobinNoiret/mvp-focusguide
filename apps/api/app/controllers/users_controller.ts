@@ -11,6 +11,7 @@ export default class UsersController {
       email: user.email,
       name: user.name,
       emailVerified: user.emailVerified,
+      flOnboarding: user.flOnboarding,
       pomodoro_settings: user.pomodoroSettings,
     })
   }
@@ -52,5 +53,21 @@ export default class UsersController {
     await user.save()
 
     return response.ok(user.pomodoroSettings)
+  }
+
+  // Complete onboarding
+  async completeOnboarding({ auth, request, response }: HttpContext) {
+    const user = await auth.authenticateUsing(['api'])
+
+    const { flOnboarding } = request.only(['flOnboarding'])
+
+    if (typeof flOnboarding !== 'boolean') {
+      throw new BadRequestException('flOnboarding must be a boolean')
+    }
+
+    user.flOnboarding = flOnboarding
+    await user.save()
+
+    return response.ok({ flOnboarding: user.flOnboarding })
   }
 }

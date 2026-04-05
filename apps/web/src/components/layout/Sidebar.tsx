@@ -113,6 +113,7 @@ export function Sidebar() {
                             </span>
                           ) : (
                             <Link
+                              id={item.href === '/today' ? 'nav-today' : item.href === '/projets' ? 'nav-projects' : item.href === '/pomodoro' ? 'nav-pomodoro' : ''}
                               href={item.href}
                               onClick={() => setMobileMenuOpen(false)}
                               className={cn(
@@ -173,6 +174,7 @@ export function Sidebar() {
                     </span>
                   ) : (
                     <Link
+                      id={item.href === '/today' ? 'nav-today' : item.href === '/projets' ? 'nav-projects' : item.href === '/pomodoro' ? 'nav-pomodoro' : ''}
                       href={item.href}
                       className={cn(
                         'flex flex-col items-center rounded-lg p-2 transition-colors',
@@ -252,6 +254,7 @@ export function Sidebar() {
                   </span>
                 ) : (
                   <Link
+                    id={item.href === '/today' ? 'nav-today' : item.href === '/projets' ? 'nav-projects' : item.href === '/pomodoro' ? 'nav-pomodoro' : ''}
                     href={item.href}
                     className={cn(
                       'flex items-center rounded-lg px-3 py-3 transition-colors',

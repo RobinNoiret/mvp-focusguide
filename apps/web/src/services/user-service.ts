@@ -1,12 +1,5 @@
 import apiClient from '@/lib/api-client'
-import type { PomodoroSettings } from '@focus-guide/shared'
-
-interface User {
-  id: string
-  email: string
-  name: string
-  pomodoro_settings?: PomodoroSettings
-}
+import type { PomodoroSettings, User } from '@focus-guide/shared'
 
 class UserService {
   async getMe(): Promise<User> {
@@ -20,6 +13,10 @@ class UserService {
       settings
     )
     return response.data
+  }
+
+  async completeOnboarding(flOnboarding: boolean): Promise<void> {
+    await apiClient.patch('/users/me/onboarding', { flOnboarding })
   }
 }
 

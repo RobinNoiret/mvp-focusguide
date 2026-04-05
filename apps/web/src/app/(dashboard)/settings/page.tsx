@@ -55,7 +55,7 @@ export default function SettingsPage() {
         <div className="px-6">
           {user && (
             <>
-              <AccountSection user={user} />
+              <AccountSection user={user} onRestart={fetchUser} />
               <PomodoroSettingsSection initialSettings={user.pomodoro_settings} onUpdate={fetchUser} />
             </>
           )}

@@ -67,6 +67,7 @@ export function KanbanColumn({
           onClick={onAddTask}
           className="flex h-7 w-7 items-center justify-center rounded-md text-dark transition-colors hover:bg-chartreuse"
           aria-label={`Ajouter une tâche dans ${title}`}
+          data-tour={id === 'todo' ? 'btn-create-task' : undefined}
         >
           <Plus className="h-4 w-4" />
         </button>

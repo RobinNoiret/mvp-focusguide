@@ -65,11 +65,12 @@ export function PomodoroTimer() {
         onClick={() => setSettingsOpen(true)}
         className="fixed top-4 right-4 z-50 bg-chartreuse text-dark hover:bg-chartreuse/90 rounded-lg h-10 w-10"
         aria-label="Paramètres"
+        data-tour="pomodoro-settings"
       >
         <Settings className="h-5 w-5" />
       </Button>
 
-      <div className="w-full h-full flex flex-col items-center justify-center space-y-8">
+      <div className="w-full h-full flex flex-col items-center justify-center space-y-8" data-tour="pomodoro-timer">
 
       <CircularTimer
         timeRemaining={timeRemaining}
@@ -82,7 +83,9 @@ export function PomodoroTimer() {
       />
 
       {/* Timer controls */}
-      <TimerControls />
+      <div data-tour="pomodoro-controls">
+        <TimerControls />
+      </div>
 
       {/* Settings modal */}
       <PomodoroSettingsModal
