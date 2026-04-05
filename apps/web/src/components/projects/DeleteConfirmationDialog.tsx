@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AlertTriangle } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 
 interface DeleteConfirmationDialogProps {
   isOpen: boolean
@@ -17,6 +18,7 @@ export function DeleteConfirmationDialog({
   onConfirm,
   taskTitle,
 }: DeleteConfirmationDialogProps) {
+  const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -74,14 +76,14 @@ export function DeleteConfirmationDialog({
                 id="delete-dialog-title"
                 className="text-lg font-semibold text-dark"
               >
-                Supprimer cette tâche ?
+                {t.modals.projectTask.delete.title}
               </h2>
               <p
                 id="delete-dialog-description"
                 className="mt-1 text-sm text-gray-600"
               >
-                Êtes-vous sûr de vouloir supprimer &quot;{taskTitle}&quot; ?
-                Cette action est irréversible.
+                {t.modals.projectTask.delete.description} &quot;{taskTitle}&quot; ?
+                {t.common.irreversible}
               </p>
             </div>
           </div>
@@ -93,7 +95,7 @@ export function DeleteConfirmationDialog({
               disabled={isDeleting}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t.common.cancel}
             </button>
             <button
               type="button"
@@ -101,7 +103,7 @@ export function DeleteConfirmationDialog({
               disabled={isDeleting}
               className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
             >
-              {isDeleting ? 'Suppression...' : 'Supprimer'}
+              {isDeleting ? t.common.deleting : t.common.delete}
             </button>
           </div>
         </div>

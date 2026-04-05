@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/hooks/use-translation'
 
 interface OnboardingTransitionProps {
   isOpen: boolean
@@ -13,6 +14,8 @@ export function OnboardingTransition({
   title,
   onContinue,
 }: OnboardingTransitionProps) {
+  const { t } = useTranslation()
+
   if (!isOpen) return null
 
   return (
@@ -34,7 +37,7 @@ export function OnboardingTransition({
             e.currentTarget.style.backgroundColor = '#D9FC00'
           }}
         >
-          Continuer
+          {t.onboarding.continue}
         </Button>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useDroppable } from '@dnd-kit/core'
 import { Plus, Inbox } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/hooks/use-translation'
 import { ProjectTaskCard } from './ProjectTaskCard'
 import type { Task, TaskStatus } from '@focus-guide/shared'
 
@@ -87,12 +88,13 @@ export function ProjectColumn({
 }
 
 function EmptyState() {
+  const { t } = useTranslation()
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
       <Inbox className="mb-3 h-12 w-12 text-[#A0A0A0]" />
-      <p className="font-medium text-[#A0A0A0]">Aucune tâche</p>
+      <p className="font-medium text-[#A0A0A0]">{t.kanban.emptyMessage}</p>
       <p className="mt-1 text-sm text-[#A0A0A0]">
-        Créez une nouvelle tâche avec le bouton +
+        {t.kanban.emptyDescription}
       </p>
     </div>
   )

@@ -1,4 +1,5 @@
 'use client'
+import { useTranslation } from '@/hooks/use-translation'
 
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -28,13 +29,6 @@ interface FormData {
   deadline: string
 }
 
-const columnTitles: Record<TaskStatus, string> = {
-  backlog: 'Backlog',
-  todo: 'À faire',
-  in_progress: 'En cours',
-  done: 'Terminé',
-}
-
 export function CreateProjectTaskModal({
   isOpen,
   onClose,
@@ -42,8 +36,19 @@ export function CreateProjectTaskModal({
   projectStatus,
   onSubmit,
 }: CreateProjectTaskModalProps) {
+  const { t } = useTranslation()
   const titleRef = useRef<HTMLInputElement>(null)
   const [mounted, setMounted] = useState(false)
+
+  const getColumnTitle = (status: TaskStatus): string => {
+    const titles: Record<TaskStatus, string> = {
+      backlog: t.today.kanban.backlog,
+      todo: t.today.kanban.todo,
+      in_progress: t.today.kanban.inProgress,
+      done: t.today.kanban.done,
+    }
+    return titles[status]
+  }
 
   const {
     register,
@@ -116,10 +121,10 @@ export function CreateProjectTaskModal({
         <div className="flex items-center justify-between p-4 border-b">
           <div>
             <h2 id="create-task-modal-title" className="text-xl font-semibold text-dark">
-              Nouvelle tâche
+              {t.modals.projectTask.create.title}
             </h2>
             <p className="text-sm text-gray-600">
-              Sera ajoutée à la colonne: <strong>{columnTitles[projectStatus]}</strong>
+              {t.common.addedToColumn} <strong>{getColumnTitle(projectStatus)}</strong>
             </p>
           </div>
           <button
@@ -139,14 +144,14 @@ export function CreateProjectTaskModal({
               htmlFor="task-title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Titre <span className="text-red-500">*</span>
+              {t.modals.projectTask.create.titleField} <span className="text-red-500">*</span>
             </label>
             <input
               {...register('title', {
-                required: 'Le titre est requis',
+                required: t.common.validation.required,
                 maxLength: {
                   value: 200,
-                  message: 'Maximum 200 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               ref={mergeRefs(
@@ -155,7 +160,7 @@ export function CreateProjectTaskModal({
               )}
               type="text"
               id="task-title"
-              placeholder="Nom de la tâche..."
+              placeholder={t.modals.projectTask.create.titlePlaceholder}
               maxLength={200}
               disabled={isSubmitting}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-chartreuse focus:border-transparent disabled:opacity-50"
@@ -174,17 +179,17 @@ export function CreateProjectTaskModal({
               htmlFor="task-notes"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Notes <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.notes} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <textarea
               {...register('notes', {
                 maxLength: {
                   value: 1000,
-                  message: 'Maximum 1000 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               id="task-notes"
-              placeholder="Détails de la tâche..."
+              placeholder={t.common.notesPlaceholder}
               rows={4}
               maxLength={1000}
               disabled={isSubmitting}
@@ -204,7 +209,7 @@ export function CreateProjectTaskModal({
               htmlFor="task-deadline"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Échéance <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.deadline} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <input
               {...register('deadline')}
@@ -223,14 +228,14 @@ export function CreateProjectTaskModal({
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !title.trim()}
               className="px-4 py-2 text-sm font-medium text-dark bg-chartreuse rounded-md hover:bg-chartreuse/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Création...' : 'Créer la tâche'}
+              {isSubmitting ? t.common.creating : t.modals.projectTask.create.submit}
             </button>
           </div>
         </form>

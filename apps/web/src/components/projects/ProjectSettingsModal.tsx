@@ -1,4 +1,5 @@
 'use client'
+import { useTranslation } from '@/hooks/use-translation'
 
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -26,6 +27,7 @@ export function ProjectSettingsModal({
   onClose,
   project,
 }: ProjectSettingsModalProps) {
+  const { t } = useTranslation()
   const titleRef = useRef<HTMLInputElement>(null)
   const updateProject = useUpdateProject()
   const [tags, setTags] = useState<string[]>([])
@@ -112,7 +114,7 @@ export function ProjectSettingsModal({
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white">
           <h2 id="settings-modal-title" className="text-xl font-semibold text-dark">
-            Paramètres du projet
+            {t.projects.settings.title}
           </h2>
           <button
             type="button"
@@ -127,26 +129,26 @@ export function ProjectSettingsModal({
         <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-6">
           {/* Project Statistics */}
           <div className="rounded-lg bg-gray-50 p-4">
-            <h3 className="mb-3 font-semibold text-dark">Statistiques</h3>
+            <h3 className="mb-3 font-semibold text-dark">{t.projects.settings.statistics}</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
-                <p className="text-gray-600">Tâches totales</p>
+                <p className="text-gray-600">{t.projects.settings.totalTasks}</p>
                 <p className="text-2xl font-bold text-dark">{project.taskCount || 0}</p>
               </div>
               <div>
-                <p className="text-gray-600">Progression</p>
+                <p className="text-gray-600">{t.projects.settings.progress}</p>
                 <p className="text-2xl font-bold text-dark">
                   {project.completionPercentage || 0}%
                 </p>
               </div>
               <div>
-                <p className="text-gray-600">Terminées</p>
+                <p className="text-gray-600">{t.projects.settings.completed}</p>
                 <p className="text-2xl font-bold text-emerald-600">
                   {project.taskCounts?.done || 0}
                 </p>
               </div>
               <div>
-                <p className="text-gray-600">En cours</p>
+                <p className="text-gray-600">{t.projects.settings.inProgress}</p>
                 <p className="text-2xl font-bold text-cyan-600">
                   {project.taskCounts?.inProgress || 0}
                 </p>
@@ -160,14 +162,14 @@ export function ProjectSettingsModal({
               htmlFor="settings-title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Titre <span className="text-red-500">*</span>
+              {t.projects.editModal.name} <span className="text-red-500">*</span>
             </label>
             <input
               {...register('title', {
-                required: 'Le titre est requis',
+                required: t.common.validation.required,
                 maxLength: {
                   value: 200,
-                  message: 'Maximum 200 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               ref={mergeRefs(
@@ -194,13 +196,13 @@ export function ProjectSettingsModal({
               htmlFor="settings-description"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Description <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.projects.editModal.description} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <textarea
               {...register('description', {
                 maxLength: {
                   value: 2000,
-                  message: 'Maximum 2000 caractères',
+                  message: t.common.validation.maxLength,
                 },
               })}
               id="settings-description"
@@ -225,7 +227,7 @@ export function ProjectSettingsModal({
               htmlFor="settings-deadline"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Échéance <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.deadline} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <input
               {...register('deadline')}
@@ -239,12 +241,12 @@ export function ProjectSettingsModal({
           {/* Tags */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tags <span className="text-gray-400 font-normal">(optionnel)</span>
+              {t.common.tags} <span className="text-gray-400 font-normal">({t.common.optional})</span>
             </label>
             <TagInput
               tags={tags}
               onTagsChange={setTags}
-              placeholder="Ajouter un tag (max 10)"
+              placeholder={t.common.addTagPlaceholder}
               maxTags={10}
               disabled={isSubmitting}
             />
@@ -258,14 +260,14 @@ export function ProjectSettingsModal({
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !title.trim()}
               className="px-4 py-2 text-sm font-medium text-dark bg-chartreuse rounded-md hover:bg-chartreuse/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+              {isSubmitting ? t.common.saving : t.common.save}
             </button>
           </div>
         </form>

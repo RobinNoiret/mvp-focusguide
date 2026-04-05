@@ -1,6 +1,7 @@
 'use client'
 
 import { ChevronLeft } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 import { ProjectSelectorDropdown } from './ProjectSelectorDropdown'
 import { ProjectTaskList } from './ProjectTaskList'
 
@@ -17,13 +18,14 @@ export function SidePanel({
   onToggleExpand,
   activeTask,
 }: SidePanelProps) {
+  const { t } = useTranslation()
   const panelWidth = isExpanded ? 'w-72' : 'w-16'
 
   return (
     // AC 1: Right side panel, expandable from 16px to 288px
     <aside
       className={`flex-shrink-0 border-l border-gray-200 bg-white transition-all duration-300 flex flex-col h-full ${panelWidth}`}
-      aria-label="Panneau de sélection de projet"
+      aria-label={t.common.projects}
       role="complementary"
     >
       {/* AC 7: Independent scroll - full height flex container */}
@@ -36,7 +38,7 @@ export function SidePanel({
               <button
                 onClick={() => onToggleExpand(!isExpanded)}
                 className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100 transition-colors"
-                aria-label={isExpanded ? 'Replier le panneau' : 'Déplier le panneau'}
+                aria-label={isExpanded ? t.common.close : t.common.projects}
                 data-tour="side-panel-toggle"
               >
                 <ChevronLeft
@@ -52,7 +54,7 @@ export function SidePanel({
           {/* Title and project selector - only visible when expanded */}
           {isExpanded && (
             <>
-              <h3 className="text-sm font-medium text-dark">Projets</h3>
+              <h3 className="text-sm font-medium text-dark">{t.common.projects}</h3>
               <ProjectSelectorDropdown />
             </>
           )}

@@ -10,6 +10,7 @@ import { ProjectDetailSkeleton } from './ProjectDetailSkeleton'
 import { DeleteProjectConfirmationDialog } from './DeleteProjectConfirmationDialog'
 import { Button } from '@/components/ui/button'
 import { useProject, useDeleteProject } from '@/hooks/use-projects'
+import { useTranslation } from '@/hooks/use-translation'
 import { cn } from '@/lib/utils'
 
 interface ProjectDetailViewProps {
@@ -18,6 +19,7 @@ interface ProjectDetailViewProps {
 
 export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
   const router = useRouter()
+  const { t } = useTranslation()
   const [viewMode, setViewMode] = useState<'kanban' | 'gantt'>('kanban')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -47,18 +49,18 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
           {is404 ? (
             <>
               <h1 className="mb-4 text-6xl font-bold text-dark">404</h1>
-              <p className="mb-6 text-lg text-gray-600">Projet introuvable</p>
+              <p className="mb-6 text-lg text-gray-600">{t.errors.loadFailed}</p>
             </>
           ) : (
             <>
               <p className="mb-4 text-lg text-gray-600">
-                Erreur lors du chargement du projet
+                {t.errors.loadFailed}
               </p>
             </>
           )}
           <div className="flex justify-center gap-4">
             <Button onClick={() => router.push('/projets')} variant="outline">
-              Retour aux projets
+              {t.common.cancel}
             </Button>
             {!is404 && (
               <Button
@@ -67,7 +69,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
                 className="bg-chartreuse text-dark hover:bg-chartreuse/90"
               >
                 <RefreshCw className={cn('mr-2 h-4 w-4', isFetching && 'animate-spin')} />
-                Réessayer
+                {t.common.retry}
               </Button>
             )}
           </div>
@@ -93,7 +95,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
             <button
               onClick={() => router.push('/projets')}
               className="rounded-lg p-2 hover:bg-white transition-colors"
-              aria-label="Retour aux projets"
+              aria-label={t.common.cancel}
             >
               <ArrowLeft className="h-6 w-6 text-dark" />
             </button>
@@ -106,7 +108,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
             <button
               onClick={() => setIsSettingsOpen(true)}
               className="rounded-lg p-2 hover:bg-white transition-colors"
-              aria-label="Paramètres du projet"
+              aria-label={t.common.settings}
             >
               <Info className="h-5 w-5 text-gray-600" />
             </button>
@@ -116,7 +118,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="rounded-lg p-2 hover:bg-white transition-colors"
-                aria-label="Menu du projet"
+                aria-label={t.common.settings}
               >
                 <MoreVertical className="h-5 w-5 text-gray-600" />
               </button>
@@ -136,7 +138,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
                       className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4" />
-                      Supprimer le projet
+                      {t.projects.settings.deleteButton}
                     </button>
                   </div>
                 </>
@@ -154,10 +156,10 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
                 ? 'bg-chartreuse text-dark'
                 : 'text-gray-600 hover:bg-gray-50'
             )}
-            aria-label="Vue Kanban"
+            aria-label={t.today.kanban.backlog}
           >
             <LayoutGrid className="h-5 w-5" />
-            <span className="font-medium">Kanban</span>
+            <span className="font-medium">{t.projects.viewModes.kanban}</span>
           </button>
           <button
             onClick={() => setViewMode('gantt')}
@@ -167,10 +169,10 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
                 ? 'bg-chartreuse text-dark'
                 : 'text-gray-600 hover:bg-gray-50'
             )}
-            aria-label="Vue Gantt"
+            aria-label={t.projects.viewModes.gantt}
           >
             <BarChart3 className="h-5 w-5" />
-            <span className="font-medium">Gantt</span>
+            <span className="font-medium">{t.projects.viewModes.gantt}</span>
           </button>
           </div>
         </div>
@@ -188,7 +190,7 @@ export function ProjectDetailView({ projectId }: ProjectDetailViewProps) {
         {/* Gantt view (placeholder for future story) */}
         {viewMode === 'gantt' && (
           <div className="flex h-96 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-white">
-            <p className="text-gray-500">A venir</p>
+            <p className="text-gray-500">{t.common.loading}</p>
           </div>
         )}
       </div>

@@ -16,10 +16,12 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/hooks/use-translation'
 import { useProjects } from '@/hooks/use-projects'
 import { useTodayStore } from '@/stores/today-store'
 
 export function ProjectSelectorDropdown() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { data: projects, isLoading } = useProjects() // AC 1
   const { selectedProjectId, setSelectedProjectId } = useTodayStore() // AC 3
@@ -46,14 +48,14 @@ export function ProjectSelectorDropdown() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          aria-label="Sélectionner un projet"
+          aria-label={t.common.projects}
           className="w-full justify-between font-medium text-dark hover:border-gray-300 focus:border-chartreuse focus:ring-2 focus:ring-chartreuse"
         >
           {/* AC 5: Show current project name */}
           <span className="truncate">
             {selectedProjectName
-              ? `Projet - ${selectedProjectName}`
-              : 'Projet - Sélectionner'}
+              ? `${t.common.projects} - ${selectedProjectName}`
+              : t.common.projects}
           </span>
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -63,20 +65,20 @@ export function ProjectSelectorDropdown() {
       <PopoverContent className="w-80 p-0" align="start">
         <Command>
           <CommandInput
-            placeholder="Rechercher un projet..."
+            placeholder={t.common.projects}
             className="h-9"
           />
           <CommandList>
             {/* AC 7: Loading state */}
             {isLoading && (
               <div className="py-6 text-center text-sm text-gray-500">
-                Chargement...
+                {t.common.loading}
               </div>
             )}
 
             {/* AC 8: Empty state */}
             {!isLoading && (!sortedProjects || sortedProjects.length === 0) && (
-              <CommandEmpty>Aucun projet disponible...</CommandEmpty>
+              <CommandEmpty>{t.projects.empty}</CommandEmpty>
             )}
 
             {!isLoading && sortedProjects && sortedProjects.length > 0 && (
@@ -88,7 +90,7 @@ export function ProjectSelectorDropdown() {
                   className="cursor-pointer"
                 >
                   <X className="mr-2 h-4 w-4 text-gray-500" />
-                  <span className="text-gray-600">Aucun projet sélectionné</span>
+                  <span className="text-gray-600">{t.projects.empty}</span>
                   {!selectedProjectId && (
                     <Check className="ml-auto h-4 w-4 text-chartreuse" />
                   )}

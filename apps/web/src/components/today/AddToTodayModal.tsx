@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useUpdateTask } from '@/hooks/use-today-tasks'
+import { useTranslation } from '@/hooks/use-translation'
 import type { Task, TaskStatus } from '@focus-guide/shared'
 
 interface AddToTodayModalProps {
@@ -18,6 +19,7 @@ interface AddToTodayModalProps {
 }
 
 export function AddToTodayModal({ isOpen, onClose, task }: AddToTodayModalProps) {
+  const { t } = useTranslation()
   const updateTask = useUpdateTask()
 
   const handleAddToColumn = async (column: TaskStatus) => {
@@ -43,7 +45,7 @@ export function AddToTodayModal({ isOpen, onClose, task }: AddToTodayModalProps)
 
         <div className="space-y-2 py-4">
           <p className="text-sm text-gray-600">
-            Dans quelle colonne souhaitez-vous ajouter cette t&acirc;che ?
+            Dans quelle colonne souhaitez-vous ajouter cette tâche ?
           </p>
 
           {/* AC 2, 11: Only Backlog and À faire aujourd'hui */}
@@ -54,7 +56,7 @@ export function AddToTodayModal({ isOpen, onClose, task }: AddToTodayModalProps)
               onClick={() => handleAddToColumn('backlog')}
               disabled={updateTask.isPending}
             >
-              Backlog
+              {t.today.kanban.backlog}
             </Button>
             <Button
               variant="outline"
@@ -62,14 +64,14 @@ export function AddToTodayModal({ isOpen, onClose, task }: AddToTodayModalProps)
               onClick={() => handleAddToColumn('todo')}
               disabled={updateTask.isPending}
             >
-              À faire aujourd&apos;hui
+              {t.today.kanban.todo}
             </Button>
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={updateTask.isPending}>
-            Annuler
+            {t.common.cancel}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -22,6 +22,7 @@ import {
   useUpdateProjectTask,
   useDeleteProjectTask,
 } from '@/hooks/use-project-tasks'
+import { useTranslation } from '@/hooks/use-translation'
 import type { ProjectWithStats } from '@/services/project-service'
 import type { Task, TaskStatus } from '@focus-guide/shared'
 
@@ -29,14 +30,17 @@ interface ProjectKanbanProps {
   project: ProjectWithStats
 }
 
-const columns = [
-  { id: 'backlog' as const, title: 'Backlog' },
-  { id: 'todo' as const, title: 'À faire' },
-  { id: 'in_progress' as const, title: 'En cours' },
-  { id: 'done' as const, title: 'Terminé' },
-]
+function getColumns(t: any) {
+  return [
+    { id: 'backlog' as const, title: t.today.kanban.backlog },
+    { id: 'todo' as const, title: t.today.kanban.todo },
+    { id: 'in_progress' as const, title: t.today.kanban.inProgress },
+    { id: 'done' as const, title: t.today.kanban.done },
+  ]
+}
 
 export function ProjectKanban({ project }: ProjectKanbanProps) {
+  const { t } = useTranslation()
   const [activeTask, setActiveTask] = useState<Task | null>(null)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [selectedColumn, setSelectedColumn] = useState<TaskStatus | null>(null)
@@ -46,6 +50,7 @@ export function ProjectKanban({ project }: ProjectKanbanProps) {
   const createTask = useCreateProjectTask(project.id)
   const updateTask = useUpdateProjectTask(project.id)
   const deleteTask = useDeleteProjectTask(project.id)
+  const columns = getColumns(t)
 
   // Same sensor configuration as Today page
   const sensors = useSensors(

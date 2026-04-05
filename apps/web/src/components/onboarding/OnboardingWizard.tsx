@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, Calendar, FolderOpen, Clock } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 
 interface OnboardingWizardProps {
   isOpen: boolean
@@ -11,39 +12,36 @@ interface OnboardingWizardProps {
   onStartTour: () => void
 }
 
-const slides = [
-  {
-    title: 'Bienvenue sur FocusGuide',
-    description:
-      'Gérez efficacement vos tâches, projets et sessions de concentration en un seul endroit. Une application conçue pour augmenter votre productivité.',
-    icon: CheckCircle2,
-  },
-  {
-    title: 'Aujourd\'hui - Tableau Kanban',
-    description:
-      'Visualisez toutes vos tâches du jour organisées en trois colonnes : À faire, En cours, et Terminé. Glissez-déposez vos tâches pour les mettre à jour et suivre votre progression en temps réel.',
-    icon: Calendar,
-  },
-  {
-    title: 'Projets - Structurez votre travail',
-    description:
-      'Créez et gérez vos projets long terme avec leurs propres tableaux Kanban. Vous pouvez créer autant de projets que nécessaire et chaque projet peut contenir plusieurs tâches liées et organisées.',
-    icon: FolderOpen,
-  },
-  {
-    title: 'Pomodoro - Maximisez votre focus',
-    description:
-      'Utilisez la technique Pomodoro avec un minuteur intégré. Configurez vos cycles de travail et de pause, et laissez-vous guider pour des sessions de concentration optimales.',
-    icon: Clock,
-  },
-]
-
 export function OnboardingWizard({
   isOpen,
   onComplete,
   onStartTour,
 }: OnboardingWizardProps) {
+  const { t } = useTranslation()
   const [currentSlide, setCurrentSlide] = useState(0)
+
+  const slides = [
+    {
+      title: t.onboarding.welcome.title,
+      description: t.onboarding.welcome.description,
+      icon: CheckCircle2,
+    },
+    {
+      title: t.onboarding.today.title,
+      description: t.onboarding.today.description,
+      icon: Calendar,
+    },
+    {
+      title: t.onboarding.projects.title,
+      description: t.onboarding.projects.description,
+      icon: FolderOpen,
+    },
+    {
+      title: t.onboarding.pomodoro.title,
+      description: t.onboarding.pomodoro.description,
+      icon: Clock,
+    },
+  ]
 
   // Reset to first slide when modal opens
   useEffect(() => {
@@ -95,7 +93,7 @@ export function OnboardingWizard({
               />
             </div>
             <p className="text-xs text-primary mt-2 text-center">
-              Étape {currentSlide + 1} de {slides.length}
+              {t.onboarding.step} {currentSlide + 1} de {slides.length}
             </p>
           </div>
         </div>
@@ -107,7 +105,7 @@ export function OnboardingWizard({
             onClick={onComplete}
             className="flex-1 text-primary"
           >
-            Ignorer
+            {t.onboarding.skip}
           </Button>
 
           {currentSlide > 0 && (
@@ -116,7 +114,7 @@ export function OnboardingWizard({
               onClick={handlePrevious}
               className="flex-1"
             >
-              Précédent
+              {t.onboarding.previous}
             </Button>
           )}
 
@@ -134,7 +132,7 @@ export function OnboardingWizard({
               e.currentTarget.style.backgroundColor = '#D9FC00'
             }}
           >
-            {currentSlide === slides.length - 1 ? 'Démarrer' : 'Suivant'}
+            {currentSlide === slides.length - 1 ? t.onboarding.final.cta : t.onboarding.next}
           </Button>
         </div>
       </DialogContent>
