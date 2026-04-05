@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { X } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 import { useUpdateTask } from '@/hooks/use-today-tasks'
 import { mergeRefs } from '@/lib/merge-refs'
 import type { Task } from '@focus-guide/shared'
@@ -20,6 +21,7 @@ interface FormData {
 }
 
 export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
+  const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
   const titleRef = useRef<HTMLInputElement>(null)
   const updateTask = useUpdateTask()
@@ -95,7 +97,7 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 id="edit-modal-title" className="text-lg font-semibold text-dark">
-            Modifier la tâche
+            {t.modals.task.edit.title}
           </h2>
           <button
             type="button"
@@ -113,7 +115,7 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
               htmlFor="edit-title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Titre
+              {t.modals.task.edit.titleField}
             </label>
             <input
               {...register('title', {
@@ -187,14 +189,14 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !title.trim()}
               className="px-4 py-2 text-sm font-medium text-dark bg-chartreuse rounded-md hover:bg-chartreuse/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+              {isSubmitting ? t.common.saving : t.common.save}
             </button>
           </div>
         </form>

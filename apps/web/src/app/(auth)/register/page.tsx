@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { authService } from '@/services/auth-service'
 import { registerSchema, type RegisterFormData } from '@/lib/validations/auth'
+import { useTranslation } from '@/hooks/use-translation'
 import { PasswordStrengthIndicator } from '@/components/auth/password-strength-indicator'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,6 +16,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
   const [isRegistered, setIsRegistered] = useState(false)
@@ -47,7 +49,7 @@ export default function RegisterPage() {
       const axiosError = error as { response?: { data?: { error?: string } } }
       setApiError(
         axiosError.response?.data?.error ||
-        "L'inscription a échoué. Veuillez réessayer."
+        t.auth.register.failed
       )
     } finally {
       setIsLoading(false)
@@ -59,18 +61,18 @@ export default function RegisterPage() {
       <div className="flex min-h-screen items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl text-dark">Compte créé avec succès !</CardTitle>
+            <CardTitle className="text-2xl text-dark">{t.auth.register.success}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="rounded-lg bg-green-50 p-4 text-sm text-green-700">
-              <p className="font-medium">Bienvenue ! 🎉</p>
-              <p className="mt-2">Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.</p>
+              <p className="font-medium">{t.auth.register.successMessage}</p>
+              <p className="mt-2">{t.auth.register.successDescription}</p>
             </div>
             <Button
               onClick={() => router.push('/login')}
               className="w-full bg-chartreuse text-dark hover:bg-chartreuse/90"
             >
-              Retour au login
+              {t.auth.register.backToLogin}
             </Button>
           </CardContent>
         </Card>
@@ -82,17 +84,17 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-dark">Créer un compte</CardTitle>
+          <CardTitle className="text-2xl text-dark">{t.auth.register.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Name Field */}
             <div className="space-y-2">
-              <Label htmlFor="name">Nom</Label>
+              <Label htmlFor="name">{t.auth.register.name}</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder="Votre nom"
+                placeholder={t.auth.register.namePlaceholder}
                 {...register('name')}
                 disabled={isLoading}
               />
@@ -103,11 +105,11 @@ export default function RegisterPage() {
 
             {/* Email Field */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.auth.register.email}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="votre@email.com"
+                placeholder={t.auth.register.emailPlaceholder}
                 {...register('email')}
                 disabled={isLoading}
               />
@@ -118,11 +120,11 @@ export default function RegisterPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password">{t.auth.register.password}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder={t.auth.register.passwordPlaceholder}
                 {...register('password')}
                 disabled={isLoading}
               />
@@ -136,11 +138,11 @@ export default function RegisterPage() {
 
             {/* Confirm Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+              <Label htmlFor="confirmPassword">{t.auth.register.confirmPassword}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder="••••••••"
+                placeholder={t.auth.register.passwordPlaceholder}
                 {...register('confirmPassword')}
                 disabled={isLoading}
               />
@@ -164,14 +166,14 @@ export default function RegisterPage() {
               className="w-full bg-chartreuse text-dark hover:bg-chartreuse/90"
               disabled={isLoading}
             >
-              {isLoading ? 'Création du compte...' : "S'inscrire"}
+              {isLoading ? t.auth.register.submitting : t.auth.register.submit}
             </Button>
 
             {/* Login Link */}
             <p className="text-center text-sm text-gray-600">
-              Vous avez déjà un compte?{' '}
+              {t.auth.register.haveAccount}{' '}
               <Link href="/login" className="text-dark font-medium hover:underline">
-                Se connecter
+                {t.auth.register.login}
               </Link>
             </p>
           </form>

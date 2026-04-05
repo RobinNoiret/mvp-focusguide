@@ -15,6 +15,7 @@ import {
   Settings,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/hooks/use-translation'
 import { useUIStore } from '@/stores/ui-store'
 import { useAuthStore } from '@/stores/auth-store'
 import { authService } from '@/services/auth-service'
@@ -28,19 +29,20 @@ interface NavItem {
   disabled?: boolean
 }
 
-const navItems: NavItem[] = [
-  { label: 'Today', href: '/today', icon: Home },
-  { label: 'Calendrier', href: '/calendar', icon: Calendar, disabled: true },
-  { label: 'Projets', href: '/projets', icon: Folder },
-  { label: 'Pomodoro', href: '/pomodoro', icon: Timer },
-]
-
 export function Sidebar() {
+  const { t } = useTranslation()
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuthStore()
   const { sidebarCollapsed, toggleSidebar, mobileMenuOpen, setMobileMenuOpen } = useUIStore()
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+
+  const navItems: NavItem[] = [
+    { label: t.common.today, href: '/today', icon: Home },
+    { label: t.common.calendar, href: '/calendar', icon: Calendar, disabled: true },
+    { label: t.common.projects, href: '/projets', icon: Folder },
+    { label: t.common.pomodoro, href: '/pomodoro', icon: Timer },
+  ]
 
   const isMobile = useIsMobile()
   const isTablet = useIsTablet()

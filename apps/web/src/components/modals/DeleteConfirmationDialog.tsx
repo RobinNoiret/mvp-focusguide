@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AlertTriangle } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 
 interface DeleteConfirmationDialogProps {
   taskTitle: string
@@ -19,6 +20,7 @@ export function DeleteConfirmationDialog({
   onConfirm,
   onCancel,
 }: DeleteConfirmationDialogProps) {
+  const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
   const cancelRef = useRef<HTMLButtonElement>(null)
 
@@ -73,19 +75,19 @@ export function DeleteConfirmationDialog({
                 id="delete-dialog-title"
                 className="text-lg font-semibold text-dark"
               >
-                Supprimer la tâche ?
+                {t.modals.task.delete.title}
               </h3>
               <p
                 id="delete-dialog-description"
                 className="text-sm text-gray-500 mt-1"
               >
-                Êtes-vous sûr de vouloir supprimer « {taskTitle} » ?
+                {t.modals.task.delete.description} « {taskTitle} » ?
               </p>
             </div>
           </div>
 
           <p className="text-sm text-gray-400 mt-4">
-            Cette action est définitive.
+            {t.modals.task.delete.description}
           </p>
         </div>
 
@@ -97,7 +99,7 @@ export function DeleteConfirmationDialog({
             disabled={isDeleting}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            Annuler
+            {t.common.cancel}
           </button>
           <button
             type="button"
@@ -105,7 +107,7 @@ export function DeleteConfirmationDialog({
             disabled={isDeleting}
             className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
           >
-            {isDeleting ? 'Suppression...' : 'Supprimer'}
+            {isDeleting ? t.common.deleting : t.common.delete}
           </button>
         </div>
       </div>

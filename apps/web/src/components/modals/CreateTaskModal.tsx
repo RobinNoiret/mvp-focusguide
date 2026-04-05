@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { X } from 'lucide-react'
+import { useTranslation } from '@/hooks/use-translation'
 import { useCreateTask } from '@/hooks/use-today-tasks'
 import { mergeRefs } from '@/lib/merge-refs'
 import type { TaskStatus } from '@focus-guide/shared'
@@ -23,6 +24,7 @@ export function CreateTaskModal({
   onClose,
   columnStatus,
 }: CreateTaskModalProps) {
+  const { t } = useTranslation()
   const titleRef = useRef<HTMLInputElement>(null)
   const createTask = useCreateTask()
 
@@ -88,7 +90,7 @@ export function CreateTaskModal({
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 id="modal-title" className="text-lg font-semibold text-dark">
-            Nouvelle tâche
+            {t.modals.task.create.title}
           </h2>
           <button
             type="button"
@@ -106,11 +108,11 @@ export function CreateTaskModal({
               htmlFor="title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Titre
+              {t.modals.task.create.titleField}
             </label>
             <input
               {...register('title', {
-                required: 'Le titre est requis',
+                required: t.modals.task.create.validation,
                 maxLength: {
                   value: 200,
                   message: 'Maximum 200 caractères',
@@ -122,7 +124,7 @@ export function CreateTaskModal({
               )}
               type="text"
               id="title"
-              placeholder="Nom de la tâche..."
+              placeholder={t.modals.task.create.titlePlaceholder}
               maxLength={200}
               disabled={isSubmitting}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-chartreuse focus:border-transparent disabled:opacity-50"
@@ -144,7 +146,7 @@ export function CreateTaskModal({
               htmlFor="notes"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Notes{' '}
+              {t.modals.task.create.titleField}{' '}
               <span className="text-gray-400 font-normal">(optionnel)</span>
             </label>
             <textarea
@@ -155,7 +157,7 @@ export function CreateTaskModal({
                 },
               })}
               id="notes"
-              placeholder="Ajoutez des détails..."
+              placeholder={t.modals.task.create.titlePlaceholder}
               rows={4}
               maxLength={2000}
               disabled={isSubmitting}
@@ -180,14 +182,14 @@ export function CreateTaskModal({
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !title.trim()}
               className="px-4 py-2 text-sm font-medium text-dark bg-chartreuse rounded-md hover:bg-chartreuse/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Création...' : 'Créer'}
+              {isSubmitting ? t.common.saving : t.modals.task.create.submit}
             </button>
           </div>
         </form>
