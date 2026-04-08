@@ -8,7 +8,7 @@ import { useTranslation } from '@/hooks/use-translation'
 
 interface OnboardingWizardProps {
   isOpen: boolean
-  onComplete: () => void
+  onComplete: (shouldSkip?: boolean) => void
   onStartTour: () => void
 }
 
@@ -69,7 +69,11 @@ export function OnboardingWizard({
   const progress = ((currentSlide + 1) / slides.length) * 100
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (!open) {
+        onComplete(true)
+      }
+    }}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl text-primary">
@@ -102,7 +106,7 @@ export function OnboardingWizard({
         <div className="flex gap-3 pt-4">
           <Button
             variant="ghost"
-            onClick={onComplete}
+            onClick={() => onComplete(true)}
             className="flex-1 text-primary"
           >
             {t.onboarding.skip}

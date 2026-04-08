@@ -29,7 +29,17 @@ export function OnboardingController() {
     }
   }, [user])
 
-  const handleWizardComplete = () => {
+  const handleWizardComplete = async (shouldSkip?: boolean) => {
+    if (shouldSkip) {
+      // If user skipped/ignored, mark onboarding as complete
+      try {
+        await userService.completeOnboarding(true)
+        setOnboardingCompleted()
+      } catch (error) {
+        console.error('Failed to complete onboarding:', error)
+        toast.error('Une erreur est survenue. Veuillez réessayer.')
+      }
+    }
     setStage(null)
   }
 
