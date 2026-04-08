@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { CollapsibleSection } from './CollapsibleSection'
 import { userService } from '@/services/user-service'
+import { useTranslation } from '@/hooks/use-translation'
 import type { PomodoroSettings } from '@/services/settings-service'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +14,7 @@ interface PomodoroSettingsSectionProps {
 }
 
 export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroSettingsSectionProps) {
+  const { t } = useTranslation()
   const [settings, setSettings] = useState<PomodoroSettings>(initialSettings)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,7 +43,7 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
 
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to save settings'
+      const errorMessage = err instanceof Error ? err.message : t.settings.pomodoro.saveFailed
       setError(errorMessage)
     } finally {
       setSaving(false)
@@ -56,15 +58,15 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
   }
 
   return (
-    <CollapsibleSection title="Pomodoro Timer">
+    <CollapsibleSection title={t.settings.pomodoro.title}>
       <div className="space-y-6">
         {/* Focus Duration */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label htmlFor="focusDuration" className="text-sm text-dark font-medium">
-              Focus Duration
+              {t.settings.pomodoro.focusDuration}
             </label>
-            <span className="text-sm font-semibold text-dark bg-white px-2 py-1 rounded">{settings.focusDuration} min</span>
+            <span className="text-sm font-semibold text-dark bg-white px-2 py-1 rounded">{settings.focusDuration} {t.settings.pomodoro.minutes}</span>
           </div>
           <input
             type="range"
@@ -81,9 +83,9 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label htmlFor="breakDuration" className="text-sm text-dark font-medium">
-              Break Duration
+              {t.settings.pomodoro.breakDuration}
             </label>
-            <span className="text-sm font-semibold text-dark bg-white px-2 py-1 rounded">{settings.breakDuration} min</span>
+            <span className="text-sm font-semibold text-dark bg-white px-2 py-1 rounded">{settings.breakDuration} {t.settings.pomodoro.minutes}</span>
           </div>
           <input
             type="range"
@@ -100,7 +102,7 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label htmlFor="repetitions" className="text-sm text-dark font-medium">
-              Repetitions
+              {t.settings.pomodoro.repetitions}
             </label>
             <span className="text-sm font-semibold text-dark bg-white px-2 py-1 rounded">{settings.repetitions}</span>
           </div>
@@ -118,7 +120,7 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
         {/* Auto Switch */}
         <div className="flex items-center justify-between">
           <label className="text-sm text-dark font-medium">
-            Auto Switch
+            {t.settings.pomodoro.autoSwitch}
           </label>
           <button
             onClick={() => handleSettingChange('autoSwitch', !settings.autoSwitch)}
@@ -147,7 +149,7 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
 
         {success && (
           <div className="text-sm text-green-600 bg-green-50 p-2 rounded">
-            Settings saved ✓
+            {t.settings.pomodoro.saveSuccess}
           </div>
         )}
 
@@ -158,14 +160,14 @@ export function PomodoroSettingsSection({ initialSettings, onUpdate }: PomodoroS
             disabled={saving || !isDirty}
             className="px-3 py-2 bg-chartreuse text-dark text-sm font-semibold rounded disabled:opacity-50"
           >
-            {saving ? 'Saving...' : 'Save'}
+            {saving ? t.settings.pomodoro.saving : t.common.save}
           </button>
           <button
             onClick={handleReset}
             disabled={saving || !isDirty}
             className="px-3 py-2 bg-white text-dark text-sm font-semibold border border-gray-300 rounded disabled:opacity-50"
           >
-            Cancel
+            {t.common.cancel}
           </button>
         </div>
       </div>

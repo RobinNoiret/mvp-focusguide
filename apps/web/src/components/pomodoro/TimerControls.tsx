@@ -3,9 +3,11 @@
 import { usePomodoroStore } from '@/stores/pomodoroStore'
 import { Play, Pause, Square, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/hooks/use-translation'
 import { cn } from '@/lib/utils'
 
 export function TimerControls() {
+  const { t } = useTranslation()
   const {
     isRunning,
     timeRemaining,
@@ -37,7 +39,7 @@ export function TimerControls() {
           'transition-all duration-150',
           isDisabled && 'opacity-50 cursor-not-allowed'
         )}
-        aria-label="Réinitialiser"
+        aria-label={t.pomodoro.reset}
       >
         <RotateCcw className="h-6 w-6" />
       </Button>
@@ -55,7 +57,7 @@ export function TimerControls() {
           'transition-all duration-150',
           isDisabled && 'opacity-50 cursor-not-allowed'
         )}
-        aria-label={isRunning ? 'Pause' : 'Démarrer'}
+        aria-label={isRunning ? t.pomodoro.pause : t.pomodoro.start}
       >
         {/* AC 3, 4: Toggle icon */}
         {isRunning ? (
@@ -78,7 +80,7 @@ export function TimerControls() {
           'transition-all duration-150',
           isDisabled && 'opacity-50 cursor-not-allowed'
         )}
-        aria-label="Arrêter"
+        aria-label={t.common.close}
       >
         <Square className="h-6 w-6" fill="#262626" />
       </Button>

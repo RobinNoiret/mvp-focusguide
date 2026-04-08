@@ -5,6 +5,7 @@ import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { Check, Pencil, Trash2, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/hooks/use-translation'
 import { useUpdateTask, useDeleteTask, useUnlinkTask } from '@/hooks/use-today-tasks'
 import { EditTaskModal } from '@/components/modals/EditTaskModal'
 import { DeleteConfirmationDialog } from '@/components/modals/DeleteConfirmationDialog'
@@ -16,6 +17,7 @@ interface TaskCardProps {
 }
 
 export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps) {
+  const { t } = useTranslation()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
@@ -90,7 +92,7 @@ export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps)
                 ? 'bg-chartreuse border-chartreuse'
                 : 'border-gray-300 hover:border-chartreuse'
             )}
-            aria-label={isDone ? 'Marquer comme non fait' : 'Marquer comme fait'}
+            aria-label={isDone ? t.common.markNotDone : t.common.markDone}
           >
             {isDone && <Check className="w-3 h-3 text-dark" />}
           </button>
@@ -123,7 +125,7 @@ export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps)
             }}
             onPointerDown={(e) => e.stopPropagation()}
             className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
-            aria-label={`Modifier ${task.title}`}
+            aria-label={`${t.common.edit} ${task.title}`}
           >
             <Pencil className="w-4 h-4" />
           </button>
@@ -133,8 +135,8 @@ export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps)
               onClick={handleUnlink}
               onPointerDown={(e) => e.stopPropagation()}
               className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded transition-colors"
-              aria-label={`Retirer ${task.title} du Today`}
-              title="Retirer du Today"
+              aria-label={`${t.common.remove} ${task.title}`}
+              title={t.common.remove}
             >
               <X className="w-4 h-4" />
             </button>
@@ -148,7 +150,7 @@ export function TaskCard({ task, isDragging: isDraggingOverlay }: TaskCardProps)
               }}
               onPointerDown={(e) => e.stopPropagation()}
               className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-              aria-label={`Supprimer ${task.title}`}
+              aria-label={`${t.common.delete} ${task.title}`}
             >
               <Trash2 className="w-4 h-4" />
             </button>

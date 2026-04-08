@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { authService } from '@/services/auth-service'
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
+import { useTranslation } from '@/hooks/use-translation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,6 +15,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
 
@@ -36,7 +38,7 @@ export default function LoginPage() {
     } catch (error: unknown) {
       const axiosError = error as { response?: { data?: { error?: string } } }
       const errorMessage = axiosError.response?.data?.error ||
-        'La connexion a échoué. Vérifiez vos identifiants.'
+        t.auth.login.failed
       setApiError(errorMessage)
     } finally {
       setIsLoading(false)
@@ -47,17 +49,17 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-dark">Se connecter</CardTitle>
+          <CardTitle className="text-2xl text-dark">{t.auth.login.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Email Field */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.auth.login.email}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="votre@email.com"
+                placeholder={t.auth.login.placeholder}
                 {...register('email')}
                 disabled={isLoading}
               />
@@ -68,7 +70,7 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password">{t.auth.login.password}</Label>
               <Input
                 id="password"
                 type="password"
@@ -94,14 +96,14 @@ export default function LoginPage() {
               className="w-full bg-chartreuse text-dark hover:bg-chartreuse/90"
               disabled={isLoading}
             >
-              {isLoading ? 'Connexion...' : 'Se connecter'}
+              {isLoading ? t.auth.login.submitting : t.auth.login.submit}
             </Button>
 
             {/* Register Link */}
             <p className="text-center text-sm text-gray-600">
-              Pas encore de compte?{' '}
+              {t.auth.login.noAccount}{' '}
               <Link href="/register" className="text-dark font-medium hover:underline">
-                S&apos;inscrire
+                {t.auth.login.signUp}
               </Link>
             </p>
 

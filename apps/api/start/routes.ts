@@ -41,6 +41,9 @@ router
     router
       .patch('/users/me/pomodoro-settings', [UsersController, 'updatePomodoroSettings'])
       .use(middleware.auth())
+    router
+      .patch('/users/me/onboarding', [UsersController, 'completeOnboarding'])
+      .use(middleware.auth())
 
     // Task routes
     router.post('/tasks', [TasksController, 'store']).use(middleware.auth())

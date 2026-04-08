@@ -32,6 +32,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare emailVerified: boolean
 
+  @column({ columnName: 'fl_onboarding' })
+  declare flOnboarding: boolean
+
   @column()
   declare pomodoroSettings: Record<string, any>
 

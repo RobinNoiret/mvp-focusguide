@@ -14,6 +14,7 @@ import {
   useSensors,
   closestCorners,
 } from '@dnd-kit/core'
+import { useTranslation } from '@/hooks/use-translation'
 import { KanbanBoard } from '@/components/kanban'
 import { ColumnStatus } from '@/components/kanban/KanbanColumn'
 import { TaskCard } from '@/components/kanban/TaskCard'
@@ -23,6 +24,7 @@ import { useTodayTasks, useUpdateTask } from '@/hooks/use-today-tasks'
 import type { Task, TaskStatus } from '@focus-guide/shared'
 
 export default function TodayPage() {
+  const { t } = useTranslation()
   const { data: tasks, isLoading, error } = useTodayTasks()
   const updateTask = useUpdateTask()
   const queryClient = useQueryClient()
@@ -162,7 +164,7 @@ export default function TodayPage() {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="animate-pulse text-gray-500">Chargement...</div>
+        <div className="animate-pulse text-gray-500">{t.common.loading}</div>
       </div>
     )
   }
@@ -171,12 +173,12 @@ export default function TodayPage() {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <p className="text-red-500">Erreur lors du chargement des tâches</p>
+          <p className="text-red-500">{t.today.loadFailed}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-2 text-sm text-chartreuse hover:underline"
           >
-            Réessayer
+            {t.common.retry}
           </button>
         </div>
       </div>
@@ -196,9 +198,9 @@ export default function TodayPage() {
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Header */}
           <div className="border-b border-gray-200 p-6">
-            <h1 className="text-3xl font-bold font-display text-dark">Tâches</h1>
+            <h1 className="text-3xl font-bold font-display text-dark">{t.today.title}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Gérez vos tâches quotidiennes
+              {t.today.subtitle}
             </p>
           </div>
 
