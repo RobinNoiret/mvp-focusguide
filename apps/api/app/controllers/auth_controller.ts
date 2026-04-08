@@ -84,6 +84,7 @@ export default class AuthController {
           email: user.email,
           name: user.name,
           emailVerified: user.emailVerified,
+          flOnboarding: user.flOnboarding,
           pomodoroSettings: user.pomodoroSettings,
         },
         accessToken: accessToken.value!.release(),
